@@ -4,7 +4,7 @@ import com.alibaba.fastjson2.annotation.JSONCreator
 import com.squareup.moshi.JsonClass
 import kotlinx.serialization.Serializable
 
-/** Product-list payloads from doc.md §8, generated deterministically to a target size. */
+/** Product-list payloads generated deterministically to a target size. */
 class Payload(val label: String, val bytes: ByteArray, val itemCount: Int) {
   val midIndex = itemCount / 2
   val lastIndex = itemCount - 1

@@ -1,5 +1,5 @@
 // Microbenchmarks: yalin vs Gson, Moshi, kotlinx.serialization, Jackson, fastjson2,
-// org.json on the same payloads (doc.md §8).
+// org.json on the same payloads.
 // Run: ./gradlew :benchmark:connectedReleaseAndroidTest
 plugins {
   alias(libs.plugins.android.library)
