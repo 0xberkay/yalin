@@ -1,0 +1,13 @@
+[package]
+name = "yalin-jni"
+description = "JNI boundary for Yalın (builds libyalin.so)"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+name = "yalin"
+crate-type = ["cdylib"]
+
+[dependencies]
+jni = "0.22.4"
+yalin-core = { path = "../yalin-core" }

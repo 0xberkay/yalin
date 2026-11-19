@@ -1,0 +1,12 @@
+[package]
+name = "yalin-bench"
+description = "Core-only (no JNI) benchmark of yalin-core vs serde_json / sonic-rs, runnable on device"
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[dependencies]
+yalin-core = { path = "../yalin-core" }
+serde = "1"
+serde_json = "1"
+sonic-rs = "0.5"
