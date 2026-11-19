@@ -4,6 +4,8 @@ Yalın validates UTF-8 JSON and reads selected fields on Android. The Rust parse
 
 ## Usage
 
+The first Maven Central release is planned as `io.github.0xberkay:yalin-android:0.0.1`. Until it is available, build from source or use the [local Maven publication](docs/releasing.md).
+
 Yalın supports Android API 24 and later on `arm64-v8a` and `x86_64`.
 
 ```kotlin

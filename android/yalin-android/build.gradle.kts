@@ -1,12 +1,58 @@
+import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
+import com.vanniktech.maven.publish.JavadocJar
 import org.gradle.internal.os.OperatingSystem
 
 plugins {
   alias(libs.plugins.android.library)
+  alias(libs.plugins.dokka)
+  alias(libs.plugins.maven.publish)
 }
 
 /** Rust workspace root (contains Cargo.toml). */
 val rustRoot: Directory = rootProject.layout.projectDirectory.dir("..")
 val rustJniLibs: File = layout.buildDirectory.dir("rustJniLibs").get().asFile
+val licenseResources = layout.buildDirectory.dir("licenseResources")
+
+val syncLicense = tasks.register<Sync>("syncLicense") {
+  from(rustRoot.file("LICENSE")) {
+    into("META-INF")
+    rename { "LICENSE-yalin" }
+  }
+  into(licenseResources)
+}
+
+mavenPublishing {
+  configure(AndroidSingleVariantLibrary(javadocJar = JavadocJar.Dokka("dokkaGeneratePublicationHtml")))
+  coordinates("io.github.0xberkay", "yalin-android", "0.0.1")
+  publishToMavenCentral()
+  signAllPublications()
+
+  pom {
+    val repository = "https://github.com/0xberkay/yalin"
+    name.set("Yalın")
+    description.set("A Rust-backed Android library for validating JSON and reading selected fields.")
+    url.set(repository)
+    licenses {
+      license {
+        name.set("MIT License")
+        url.set("https://opensource.org/license/mit")
+        distribution.set("repo")
+      }
+    }
+    developers {
+      developer {
+        id.set("0xberkay")
+        name.set("0xberkay")
+        url.set("https://github.com/0xberkay")
+      }
+    }
+    scm {
+      url.set(repository)
+      connection.set("scm:git:$repository.git")
+      developerConnection.set("scm:git:ssh://git@github.com/0xberkay/yalin.git")
+    }
+  }
+}
 
 android {
   namespace = "dev.yalin"
@@ -23,6 +69,7 @@ android {
     targetCompatibility = JavaVersion.VERSION_17
   }
   sourceSets {
+    getByName("main") { resources.directories.add(licenseResources.get().asFile.path) }
     // Same tests run on the host JVM (test) and on a device/emulator (androidTest).
     getByName("test") { kotlin.directories.add("src/sharedTest/kotlin") }
     getByName("androidTest") { kotlin.directories.add("src/sharedTest/kotlin") }
@@ -59,7 +106,7 @@ val cargoBuildAndroid = rustAbis.map { target ->
     group = "rust"
     description = "Builds libyalin.so for ${target.abi}"
     workingDir(rustRoot)
-    commandLine("cargo", "build", "-p", "yalin-jni", "--release", "--target", target.triple)
+    commandLine("cargo", "build", "--locked", "-p", "yalin-jni", "--release", "--target", target.triple)
     val linkerVar = "CARGO_TARGET_${target.triple.uppercase().replace('-', '_')}_LINKER"
     environment(linkerVar, "${ndkBin.get()}/${target.triple}$minSdk-clang")
   }
@@ -77,13 +124,13 @@ val syncRustJniLibs = tasks.register<Sync>("syncRustJniLibs") {
 androidComponents.onVariants { variant ->
   variant.sources.jniLibs?.addStaticSourceDirectory(rustJniLibs.path)
 }
-tasks.named("preBuild") { dependsOn(syncRustJniLibs) }
+tasks.named("preBuild") { dependsOn(syncRustJniLibs, syncLicense) }
 
 // Host build so local unit tests exercise the real JNI layer on the JVM.
 val cargoBuildHost = tasks.register<Exec>("cargoBuildHost") {
   group = "rust"
   workingDir(rustRoot)
-  commandLine("cargo", "build", "-p", "yalin-jni")
+  commandLine("cargo", "build", "--locked", "-p", "yalin-jni")
 }
 
 tasks.withType<Test>().configureEach {
