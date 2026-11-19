@@ -6,7 +6,7 @@ Yalın validates UTF-8 JSON and reads selected fields on Android. The Rust parse
 
 The first Maven Central release is planned as `io.github.0xberkay:yalin-android:0.0.1`. Until it is available, build from source or use the [local Maven publication](docs/releasing.md).
 
-Yalın supports Android API 24 and later on `arm64-v8a` and `x86_64`.
+Yalın supports Android API 24 and later on `arm64-v8a` and `x86_64`. The `0.0.1` AAR requires `compileSdk` 37 or later.
 
 ```kotlin
 import dev.yalin.YalinJson
@@ -42,4 +42,4 @@ See the [Android benchmarks](docs/benchmarks.md) for device measurements and the
 
 ## License
 
-Yalın is available under the [MIT License](LICENSE). Sample app files with Android Open Source Project notices retain their [Apache 2.0 license](licenses/Apache-2.0.txt).
+Yalın is available under the [Apache License 2.0](LICENSE). See [NOTICE](NOTICE) for attribution. Sample app files from the Android Open Source Project carry their original notices.

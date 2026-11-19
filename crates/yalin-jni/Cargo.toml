@@ -3,6 +3,7 @@ name = "yalin-jni"
 description = "JNI boundary for Yalın (builds libyalin.so)"
 version.workspace = true
 edition.workspace = true
+license.workspace = true
 
 [lib]
 name = "yalin"

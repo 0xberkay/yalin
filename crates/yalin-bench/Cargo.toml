@@ -3,6 +3,7 @@ name = "yalin-bench"
 description = "Core-only (no JNI) benchmark of yalin-core vs serde_json / sonic-rs, runnable on device"
 version.workspace = true
 edition.workspace = true
+license.workspace = true
 publish = false
 
 [dependencies]

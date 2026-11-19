@@ -1,6 +1,7 @@
 import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
 import com.vanniktech.maven.publish.JavadocJar
 import org.gradle.internal.os.OperatingSystem
+import org.gradle.jvm.tasks.Jar
 
 plugins {
   alias(libs.plugins.android.library)
@@ -13,13 +14,16 @@ val rustRoot: Directory = rootProject.layout.projectDirectory.dir("..")
 val rustJniLibs: File = layout.buildDirectory.dir("rustJniLibs").get().asFile
 val licenseResources = layout.buildDirectory.dir("licenseResources")
 
-val syncLicense = tasks.register<Sync>("syncLicense") {
-  from(rustRoot.file("LICENSE")) {
+val syncLicenseNotices = tasks.register<Sync>("syncLicenseNotices") {
+  from(listOf(rustRoot.file("LICENSE"), rustRoot.file("NOTICE"))) {
     into("META-INF")
-    rename { "LICENSE-yalin" }
+    rename { "$it-yalin" }
   }
   into(licenseResources)
 }
+
+tasks.withType<Jar>().matching { it.name == "sourceReleaseJar" || it.name == "dokkaJavadocJar" }
+  .configureEach { from(syncLicenseNotices) }
 
 mavenPublishing {
   configure(AndroidSingleVariantLibrary(javadocJar = JavadocJar.Dokka("dokkaGeneratePublicationHtml")))
@@ -34,8 +38,8 @@ mavenPublishing {
     url.set(repository)
     licenses {
       license {
-        name.set("MIT License")
-        url.set("https://opensource.org/license/mit")
+        name.set("The Apache License, Version 2.0")
+        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
         distribution.set("repo")
       }
     }
@@ -124,7 +128,7 @@ val syncRustJniLibs = tasks.register<Sync>("syncRustJniLibs") {
 androidComponents.onVariants { variant ->
   variant.sources.jniLibs?.addStaticSourceDirectory(rustJniLibs.path)
 }
-tasks.named("preBuild") { dependsOn(syncRustJniLibs, syncLicense) }
+tasks.named("preBuild") { dependsOn(syncRustJniLibs, syncLicenseNotices) }
 
 // Host build so local unit tests exercise the real JNI layer on the JVM.
 val cargoBuildHost = tasks.register<Exec>("cargoBuildHost") {

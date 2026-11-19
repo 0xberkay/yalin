@@ -3,6 +3,7 @@ name = "yalin-core"
 description = "Validating, selective-read JSON engine (platform independent core of Yalın)"
 version.workspace = true
 edition.workspace = true
+license.workspace = true
 
 [dev-dependencies]
 serde_json = "1"
