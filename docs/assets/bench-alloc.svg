@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 368" width="760" height="368" role="img" aria-label="Allocations for the full tree of a 1 MB JSON">
+<style>
+  .bg{fill:#fcfcfb} .t1{fill:#0b0b0b} .t2{fill:#52514e} .t3{fill:#8a8984}
+  .grid{stroke:#e6e5e0} .hi{fill:#2a78d6} .lo{fill:#c9c8c2} .card{fill:#f3f2ee;stroke:#e1e0da}
+  .acc{fill:#2a78d6} .accs{stroke:#2a78d6} .accbg{fill:#e8f0fb;stroke:#2a78d6}
+  .line{stroke:#8a8984} .ar{fill:#8a8984}
+  @media (prefers-color-scheme: dark){
+    .bg{fill:#1a1a19} .t1{fill:#f0efec} .t2{fill:#c3c2b7} .t3{fill:#8f8e86}
+    .grid{stroke:#2e2e2c} .hi{fill:#3987e5} .lo{fill:#4a4a46} .card{fill:#242422;stroke:#363633}
+    .acc{fill:#3987e5} .accs{stroke:#3987e5} .accbg{fill:#1d2b3d;stroke:#3987e5}
+    .line{stroke:#8f8e86} .ar{fill:#8f8e86}
+  }
+  text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+</style>
+<rect class="bg" width="760" height="368" rx="12"/>
+<text class="t1" x="24" y="38" font-size="19" font-weight="650">Allocations for the full tree of a 1 MB JSON</text>
+<text class="t2" x="24" y="62" font-size="13">Objects created per parse. Fewer objects, less GC pressure.</text>
+<line class="grid" x1="120.0" x2="120.0" y1="84" y2="326" stroke-width="1"/>
+<text class="t3" x="120.0" y="342" font-size="11" text-anchor="middle">0</text>
+<line class="grid" x1="254.9" x2="254.9" y1="84" y2="326" stroke-width="1"/>
+<text class="t3" x="254.9" y="342" font-size="11" text-anchor="middle">100</text>
+<line class="grid" x1="389.7" x2="389.7" y1="84" y2="326" stroke-width="1"/>
+<text class="t3" x="389.7" y="342" font-size="11" text-anchor="middle">200</text>
+<line class="grid" x1="524.6" x2="524.6" y1="84" y2="326" stroke-width="1"/>
+<text class="t3" x="524.6" y="342" font-size="11" text-anchor="middle">300</text>
+<text class="t3" x="590.0" y="358" font-size="11" text-anchor="end">k objects, lower is better</text>
+<text class="t1" x="106" y="110.0" font-size="14" font-weight="650" text-anchor="end">Yalın</text>
+<path class="hi" d="M120,92 h102.9 a4,4 0 0 1 4,4 v18 a4,4 0 0 1 -4,4 h-102.9 z"/>
+<text class="t1" x="234.9" y="110.0" font-size="13" font-weight="650">79.3 k objects</text>
+<text class="t2" x="106" y="148.0" font-size="14" font-weight="400" text-anchor="end">fastjson2</text>
+<path class="lo" d="M120,130 h197.1 a4,4 0 0 1 4,4 v18 a4,4 0 0 1 -4,4 h-197.1 z"/>
+<text class="t1" x="329.1" y="148.0" font-size="13" font-weight="400">149.1 k objects<tspan class="t3" font-weight="400" dx="6">1.9× more</tspan></text>
+<text class="t2" x="106" y="186.0" font-size="14" font-weight="400" text-anchor="end">Jackson</text>
+<path class="lo" d="M120,168 h324.9 a4,4 0 0 1 4,4 v18 a4,4 0 0 1 -4,4 h-324.9 z"/>
+<text class="t1" x="456.9" y="186.0" font-size="13" font-weight="400">243.9 k objects<tspan class="t3" font-weight="400" dx="6">3.1× more</tspan></text>
+<text class="t2" x="106" y="224.0" font-size="14" font-weight="400" text-anchor="end">kotlinx</text>
+<path class="lo" d="M120,206 h406.5 a4,4 0 0 1 4,4 v18 a4,4 0 0 1 -4,4 h-406.5 z"/>
+<text class="t1" x="538.5" y="224.0" font-size="13" font-weight="400">304.4 k objects<tspan class="t3" font-weight="400" dx="6">3.8× more</tspan></text>
+<text class="t2" x="106" y="262.0" font-size="14" font-weight="400" text-anchor="end">Moshi</text>
+<path class="lo" d="M120,244 h406.7 a4,4 0 0 1 4,4 v18 a4,4 0 0 1 -4,4 h-406.7 z"/>
+<text class="t1" x="538.7" y="262.0" font-size="13" font-weight="400">304.5 k objects<tspan class="t3" font-weight="400" dx="6">3.8× more</tspan></text>
+<text class="t2" x="106" y="300.0" font-size="14" font-weight="400" text-anchor="end">Gson</text>
+<path class="lo" d="M120,282 h466.0 a4,4 0 0 1 4,4 v18 a4,4 0 0 1 -4,4 h-466.0 z"/>
+<text class="t1" x="598.0" y="300.0" font-size="13" font-weight="400">348.5 k objects<tspan class="t3" font-weight="400" dx="6">4.4× more</tspan></text>
+<text class="t3" x="24" y="358" font-size="11">Same run as the full-tree benchmark.</text>
+</svg>

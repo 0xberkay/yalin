@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 406" width="760" height="406" role="img" aria-label="Read 4 fields from a 1 MB JSON">
+<style>
+  .bg{fill:#fcfcfb} .t1{fill:#0b0b0b} .t2{fill:#52514e} .t3{fill:#8a8984}
+  .grid{stroke:#e6e5e0} .hi{fill:#2a78d6} .lo{fill:#c9c8c2} .card{fill:#f3f2ee;stroke:#e1e0da}
+  .acc{fill:#2a78d6} .accs{stroke:#2a78d6} .accbg{fill:#e8f0fb;stroke:#2a78d6}
+  .line{stroke:#8a8984} .ar{fill:#8a8984}
+  @media (prefers-color-scheme: dark){
+    .bg{fill:#1a1a19} .t1{fill:#f0efec} .t2{fill:#c3c2b7} .t3{fill:#8f8e86}
+    .grid{stroke:#2e2e2c} .hi{fill:#3987e5} .lo{fill:#4a4a46} .card{fill:#242422;stroke:#363633}
+    .acc{fill:#3987e5} .accs{stroke:#3987e5} .accbg{fill:#1d2b3d;stroke:#3987e5}
+    .line{stroke:#8f8e86} .ar{fill:#8f8e86}
+  }
+  text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+</style>
+<rect class="bg" width="760" height="406" rx="12"/>
+<text class="t1" x="24" y="38" font-size="19" font-weight="650">Read 4 fields from a 1 MB JSON</text>
+<text class="t2" x="24" y="62" font-size="13">Whole input validated, 4 values returned. Median time on a Helio G99 phone, Android 13.</text>
+<line class="grid" x1="120.0" x2="120.0" y1="84" y2="364" stroke-width="1"/>
+<text class="t3" x="120.0" y="380" font-size="11" text-anchor="middle">0</text>
+<line class="grid" x1="261.4" x2="261.4" y1="84" y2="364" stroke-width="1"/>
+<text class="t3" x="261.4" y="380" font-size="11" text-anchor="middle">20</text>
+<line class="grid" x1="402.7" x2="402.7" y1="84" y2="364" stroke-width="1"/>
+<text class="t3" x="402.7" y="380" font-size="11" text-anchor="middle">40</text>
+<line class="grid" x1="544.1" x2="544.1" y1="84" y2="364" stroke-width="1"/>
+<text class="t3" x="544.1" y="380" font-size="11" text-anchor="middle">60</text>
+<text class="t3" x="590.0" y="396" font-size="11" text-anchor="end">ms, lower is better</text>
+<text class="t1" x="106" y="110.0" font-size="14" font-weight="650" text-anchor="end">Yalın</text>
+<path class="hi" d="M120,92 h41.7 a4,4 0 0 1 4,4 v18 a4,4 0 0 1 -4,4 h-41.7 z"/>
+<text class="t1" x="173.7" y="110.0" font-size="13" font-weight="650">6.47 ms</text>
+<text class="t2" x="106" y="148.0" font-size="14" font-weight="400" text-anchor="end">fastjson2</text>
+<path class="lo" d="M120,130 h152.0 a4,4 0 0 1 4,4 v18 a4,4 0 0 1 -4,4 h-152.0 z"/>
+<text class="t1" x="284.0" y="148.0" font-size="13" font-weight="400">22.07 ms<tspan class="t3" font-weight="400" dx="6">3.4× more</tspan></text>
+<text class="t2" x="106" y="186.0" font-size="14" font-weight="400" text-anchor="end">Jackson</text>
+<path class="lo" d="M120,168 h271.8 a4,4 0 0 1 4,4 v18 a4,4 0 0 1 -4,4 h-271.8 z"/>
+<text class="t1" x="403.8" y="186.0" font-size="13" font-weight="400">39.02 ms<tspan class="t3" font-weight="400" dx="6">6.0× more</tspan></text>
+<text class="t2" x="106" y="224.0" font-size="14" font-weight="400" text-anchor="end">org.json</text>
+<path class="lo" d="M120,206 h302.9 a4,4 0 0 1 4,4 v18 a4,4 0 0 1 -4,4 h-302.9 z"/>
+<text class="t1" x="434.9" y="224.0" font-size="13" font-weight="400">43.42 ms<tspan class="t3" font-weight="400" dx="6">6.7× more</tspan></text>
+<text class="t2" x="106" y="262.0" font-size="14" font-weight="400" text-anchor="end">Gson</text>
+<path class="lo" d="M120,244 h312.2 a4,4 0 0 1 4,4 v18 a4,4 0 0 1 -4,4 h-312.2 z"/>
+<text class="t1" x="444.2" y="262.0" font-size="13" font-weight="400">44.74 ms<tspan class="t3" font-weight="400" dx="6">6.9× more</tspan></text>
+<text class="t2" x="106" y="300.0" font-size="14" font-weight="400" text-anchor="end">kotlinx</text>
+<path class="lo" d="M120,282 h376.0 a4,4 0 0 1 4,4 v18 a4,4 0 0 1 -4,4 h-376.0 z"/>
+<text class="t1" x="508.0" y="300.0" font-size="13" font-weight="400">53.77 ms<tspan class="t3" font-weight="400" dx="6">8.3× more</tspan></text>
+<text class="t2" x="106" y="338.0" font-size="14" font-weight="400" text-anchor="end">Moshi</text>
+<path class="lo" d="M120,320 h466.0 a4,4 0 0 1 4,4 v18 a4,4 0 0 1 -4,4 h-466.0 z"/>
+<text class="t1" x="598.0" y="338.0" font-size="13" font-weight="400">66.5 ms<tspan class="t3" font-weight="400" dx="6">10.3× more</tspan></text>
+<text class="t3" x="24" y="396" font-size="11">Tree APIs of each library, then navigation. AndroidX Microbenchmark, release build.</text>
+</svg>

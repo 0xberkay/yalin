@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 430" width="760" height="430" role="img" aria-label="Yalın architecture">
+<style>
+  .bg{fill:#fcfcfb} .t1{fill:#0b0b0b} .t2{fill:#52514e} .t3{fill:#8a8984}
+  .grid{stroke:#e6e5e0} .hi{fill:#2a78d6} .lo{fill:#c9c8c2} .card{fill:#f3f2ee;stroke:#e1e0da}
+  .acc{fill:#2a78d6} .accs{stroke:#2a78d6} .accbg{fill:#e8f0fb;stroke:#2a78d6}
+  .line{stroke:#8a8984} .ar{fill:#8a8984}
+  @media (prefers-color-scheme: dark){
+    .bg{fill:#1a1a19} .t1{fill:#f0efec} .t2{fill:#c3c2b7} .t3{fill:#8f8e86}
+    .grid{stroke:#2e2e2c} .hi{fill:#3987e5} .lo{fill:#4a4a46} .card{fill:#242422;stroke:#363633}
+    .acc{fill:#3987e5} .accs{stroke:#3987e5} .accbg{fill:#1d2b3d;stroke:#3987e5}
+    .line{stroke:#8f8e86} .ar{fill:#8f8e86}
+  }
+  text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+</style>
+<rect class="bg" width="760" height="430" rx="12"/>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ar" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<text class="t3" x="24" y="59.0" font-size="11" font-weight="600" letter-spacing="1">YOUR APP</text>
+<rect class="card" x="150" y="30" width="586" height="50" rx="10" stroke-width="1.2"/>
+<text class="t1" x="443.0" y="52.0" font-size="14" font-weight="650" text-anchor="middle">Kotlin / Java</text>
+<text class="t2" x="443.0" y="71.0" font-size="12" text-anchor="middle">ByteArray, ByteBuffer or String</text>
+<text class="t3" x="24" y="146.0" font-size="11" font-weight="600" letter-spacing="1">KOTLIN API</text>
+<rect class="card" x="150" y="112" width="186" height="60" rx="10" stroke-width="1.2"/>
+<text class="t1" x="243.0" y="139.0" font-size="14" font-weight="650" text-anchor="middle">project()</text>
+<text class="t2" x="243.0" y="158.0" font-size="12" text-anchor="middle">batch of paths, one call</text>
+<rect class="card" x="350" y="112" width="186" height="60" rx="10" stroke-width="1.2"/>
+<text class="t1" x="443.0" y="139.0" font-size="14" font-weight="650" text-anchor="middle">parse()</text>
+<text class="t2" x="443.0" y="158.0" font-size="12" text-anchor="middle">reusable YalinDocument</text>
+<rect class="card" x="550" y="112" width="186" height="60" rx="10" stroke-width="1.2"/>
+<text class="t1" x="643.0" y="139.0" font-size="14" font-weight="650" text-anchor="middle">parseTree()</text>
+<text class="t2" x="643.0" y="158.0" font-size="12" text-anchor="middle">immutable YalinValue</text>
+<line class="line" x1="243" y1="80" x2="243" y2="110" stroke-width="1.5" marker-end="url(#a)"/>
+<line class="line" x1="443" y1="80" x2="443" y2="110" stroke-width="1.5" marker-end="url(#a)"/>
+<line class="line" x1="643" y1="80" x2="643" y2="110" stroke-width="1.5" marker-end="url(#a)"/>
+<text class="t3" x="24" y="228.0" font-size="11" font-weight="600" letter-spacing="1">JNI</text>
+<rect class="accbg" x="150" y="204" width="586" height="40" rx="10" stroke-width="1.2"/>
+<text class="t1" x="443" y="229" font-size="13" text-anchor="middle"><tspan font-weight="650">yalin-jni</tspan>  ·  one crossing per call  ·  compact binary tree encoding</text>
+<line class="line" x1="243" y1="172" x2="243" y2="202" stroke-width="1.5" marker-end="url(#a)"/>
+<line class="line" x1="443" y1="172" x2="443" y2="202" stroke-width="1.5" marker-end="url(#a)"/>
+<line class="line" x1="643" y1="172" x2="643" y2="202" stroke-width="1.5" marker-end="url(#a)"/>
+<text class="t3" x="24" y="340.0" font-size="11" font-weight="600" letter-spacing="1">RUST CORE</text>
+<rect class="card" x="150" y="276" width="586" height="124" rx="10" stroke-width="1.2"/>
+<text class="t1" x="166" y="298" font-size="13" font-weight="650">yalin-core</text>
+<rect class="accbg" x="166" y="314" width="128" height="66" rx="8" stroke-width="1"/>
+<text class="t1" x="230.0" y="342" font-size="13" font-weight="650" text-anchor="middle">UTF-8 check</text>
+<text class="t2" x="230.0" y="361" font-size="11" text-anchor="middle">NEON, whole input</text>
+<rect class="accbg" x="308" y="314" width="128" height="66" rx="8" stroke-width="1"/>
+<text class="t1" x="372.0" y="342" font-size="13" font-weight="650" text-anchor="middle">Stage 1</text>
+<text class="t2" x="372.0" y="361" font-size="11" text-anchor="middle">SIMD block scanner</text>
+<line class="line" x1="295" y1="347" x2="306" y2="347" stroke-width="1.5" marker-end="url(#a)"/>
+<rect class="accbg" x="450" y="314" width="128" height="66" rx="8" stroke-width="1"/>
+<text class="t1" x="514.0" y="342" font-size="13" font-weight="650" text-anchor="middle">Stage 2</text>
+<text class="t2" x="514.0" y="361" font-size="11" text-anchor="middle">strict grammar → tape</text>
+<line class="line" x1="437" y1="347" x2="448" y2="347" stroke-width="1.5" marker-end="url(#a)"/>
+<rect class="accbg" x="592" y="314" width="128" height="66" rx="8" stroke-width="1"/>
+<text class="t1" x="656.0" y="342" font-size="13" font-weight="650" text-anchor="middle">Query / walk</text>
+<text class="t2" x="656.0" y="361" font-size="11" text-anchor="middle">paths or full tree</text>
+<line class="line" x1="579" y1="347" x2="590" y2="347" stroke-width="1.5" marker-end="url(#a)"/>
+<line class="line" x1="443" y1="244" x2="443" y2="274" stroke-width="1.5" marker-end="url(#a)"/>
+</svg>
