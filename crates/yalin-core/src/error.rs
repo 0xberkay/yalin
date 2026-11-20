@@ -28,6 +28,9 @@ pub enum ErrorKind {
     DepthLimitExceeded,
     /// Non-whitespace content after the root value.
     TrailingCharacters,
+    /// An object key repeats (after unescaping). Only reported by
+    /// [`Value::walk`](crate::Value::walk); path queries take the first occurrence.
+    DuplicateKey,
 }
 
 impl ErrorKind {
@@ -45,6 +48,7 @@ impl ErrorKind {
             Self::InvalidNumber => "invalid number",
             Self::DepthLimitExceeded => "nesting depth limit exceeded",
             Self::TrailingCharacters => "trailing characters after JSON value",
+            Self::DuplicateKey => "duplicate object key",
         }
     }
 }

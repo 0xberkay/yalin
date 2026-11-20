@@ -23,6 +23,8 @@
 //!
 //! A non-zero status is a parse error code (see [`parse_error_code`]).
 //!
+//! The whole-tree format is in [`crate::tree`].
+//!
 //! **Parse error code** (`i64`, always negative):
 //! `-(((offset << 8) | kind) + 1)`, kind numbering as in `YalinParseError.kt`.
 
@@ -67,6 +69,7 @@ pub fn parse_error_code(e: &JsonError) -> i64 {
         ErrorKind::InvalidNumber => 9,
         ErrorKind::DepthLimitExceeded => 10,
         ErrorKind::TrailingCharacters => 11,
+        ErrorKind::DuplicateKey => 12,
         _ => 255,
     };
     -((((e.offset() as i64) << 8) | kind) + 1)
@@ -84,7 +87,7 @@ pub fn kind_code(kind: ValueKind) -> u8 {
     }
 }
 
-fn put_bytes(out: &mut Vec<u8>, bytes: &[u8]) {
+pub fn put_bytes(out: &mut Vec<u8>, bytes: &[u8]) {
     // Spans come from an input capped at u32::MAX bytes.
     out.extend_from_slice(&(bytes.len() as u32).to_le_bytes());
     out.extend_from_slice(bytes);

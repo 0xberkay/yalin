@@ -169,16 +169,14 @@ impl<'d> Value<'d> {
         let bytes = self.bytes();
         Ok(match self.node().tag {
             Tag::EscapedString => Cow::Owned(strings::unescape(bytes)),
-            // Validated as UTF-8 by the parser; the lossy path is unreachable.
-            _ => String::from_utf8_lossy(bytes),
+            _ => Cow::Borrowed(validated_str(bytes)),
         })
     }
 
     /// The number exactly as written in the input.
     pub fn as_number_str(&self) -> Result<&'d str, QueryError> {
         self.expect(ValueKind::Number)?;
-        // Number spans are ASCII by grammar.
-        std::str::from_utf8(self.bytes()).map_err(|_| QueryError::NumberNotRepresentable)
+        Ok(validated_str(self.bytes()))
     }
 
     /// Integer value; fails for fractions/exponents (`1.0`, `1e2`) and out-of-range values.
@@ -241,6 +239,16 @@ impl<'d> Value<'d> {
             _ => raw == key.as_bytes(),
         }
     }
+}
+
+/// A string or number span of a parsed document, or an unescaped string, as `&str`.
+pub(crate) fn validated_str(span: &[u8]) -> &str {
+    debug_assert!(std::str::from_utf8(span).is_ok());
+    // SAFETY: the parser validated the whole input as UTF-8, and string and
+    // number spans start and end next to ASCII bytes (quotes, delimiters), so
+    // they never split a multi-byte sequence. Unescaping such a span keeps the
+    // bytes between escapes and writes each escape as a whole `char`.
+    unsafe { std::str::from_utf8_unchecked(span) }
 }
 
 impl fmt::Debug for Value<'_> {

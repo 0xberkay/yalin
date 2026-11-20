@@ -1,5 +1,6 @@
 package dev.yalin
 
+import java.math.BigDecimal
 import java.nio.ByteBuffer
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -97,6 +98,100 @@ class YalinJsonTest {
       YalinParseError.DEPTH_LIMIT_EXCEEDED,
       assertThrows(YalinParseException::class.java) { YalinJson.parse(deep.encodeToByteArray()) }.error,
     )
+  }
+
+  @Test
+  fun treeHasEveryValue() {
+    val root = YalinJson.parseTree(json) as YalinObject
+    assertEquals(listOf("user", "items", "text"), root.keys.toList())
+    val user = root["user"] as YalinObject
+    assertEquals(YalinLong(42), user["id"])
+    assertEquals(YalinString("Ada"), user["name"])
+    assertEquals(YalinNull, user["email"])
+    assertEquals(YalinBoolean.TRUE, user["active"])
+    assertEquals(YalinDouble(9.5), user["score"])
+    assertEquals(YalinString("Ada\n"), user["nick"])
+    assertEquals(YalinBigNumber(BigDecimal("123456789012345678901")), user["big"])
+    assertEquals(YalinBigNumber(BigDecimal("1e400")), user["huge"])
+    assertNull(user["phone"])
+    val items = root["items"] as YalinArray
+    assertEquals(4, items.size)
+    assertEquals(YalinDouble(4.25), (items[3] as YalinObject)["price"])
+    assertEquals(YalinString("héllo 中文 😀"), root["text"])
+    assertEquals(YalinJson.parseTree(String(json, Charsets.UTF_8)), root)
+  }
+
+  @Test
+  fun treeDecodesEveryUtf8Width() {
+    val text = "a é ı ş 中文 € 😀 \u0000 \u07FF \u0800 \uFFFF ${String(Character.toChars(0x10FFFF))}"
+    val json = "[\"" + text.replace("\u0000", "\\u0000") + "\"]"
+    assertEquals(listOf(YalinString(text)), YalinJson.parseTree(json))
+    val long = "çğ".repeat(500) // longer than the decoder's initial scratch
+    assertEquals(YalinString(long), YalinJson.parseTree("\"$long\""))
+  }
+
+  @Test
+  fun treeRoots() {
+    assertEquals(YalinLong(-7), YalinJson.parseTree("-7"))
+    assertEquals(YalinDouble(1e2), YalinJson.parseTree("1e2"))
+    assertEquals(YalinLong(Long.MIN_VALUE), YalinJson.parseTree(Long.MIN_VALUE.toString()))
+    assertEquals(YalinString(""), YalinJson.parseTree("\"\""))
+    assertEquals(YalinBoolean.FALSE, YalinJson.parseTree(" false "))
+    assertEquals(emptyList<YalinValue>(), YalinJson.parseTree("[]"))
+    assertEquals(emptyMap<String, YalinValue>(), YalinJson.parseTree("{}"))
+  }
+
+  @Test
+  fun bigObjectLookupAndOrder() {
+    val keys = (0 until 100).map { "k$it" }
+    val tree = YalinJson.parseTree(keys.joinToString(",", "{", "}") { "\"$it\":${it.drop(1)}" }) as YalinObject
+    assertEquals(keys, tree.keys.toList())
+    for ((i, k) in keys.withIndex()) assertEquals(YalinLong(i.toLong()), tree[k])
+    assertFalse(tree.containsKey("k100"))
+    assertEquals(tree, keys.withIndex().associate { (i, k) -> k to YalinLong(i.toLong()) })
+  }
+
+  @Test
+  fun repeatedAndCollidingStrings() {
+    // Far more distinct short keys and values than cache slots, each seen twice.
+    val words = (0 until 5000).map { "w${it % 2500}" }
+    val json = words.joinToString(",", "[", "]") { "{\"$it\":\"$it\",\"x\":\"${"y".repeat(40)}\"}" }
+    val tree = YalinJson.parseTree(json) as YalinArray
+    for ((i, w) in words.withIndex()) {
+      val o = tree[i] as YalinObject
+      assertEquals(listOf(w, "x"), o.keys.toList())
+      assertEquals(YalinString(w), o[w])
+      assertEquals(YalinString("y".repeat(40)), o["x"])
+    }
+  }
+
+  @Test
+  fun sharedSymbolsAcrossTrees() {
+    val a = YalinJson.parseTree("""{"status":"ok","n":"é"}""") as YalinObject
+    val b = YalinJson.parseTree("""{"status":"ok","n":"é"}""") as YalinObject
+    assertTrue(a.keys.first() === b.keys.first())
+    assertTrue(a["status"] === b["status"])
+    assertFalse(a["n"] === b["n"]) // non-ASCII is never shared
+    // Distinct strings that may share a table slot still decode to themselves.
+    repeat(3) {
+      for (i in 0 until 10_000) {
+        val t = YalinJson.parseTree("{\"k$i\":\"v$i\"}") as YalinObject
+        assertEquals(YalinString("v$i"), t["k$i"])
+      }
+    }
+  }
+
+  @Test
+  fun treeErrors() {
+    val dup = assertThrows(YalinParseException::class.java) { YalinJson.parseTree("""{"a":1,"${bs}u0061":2}""") }
+    assertEquals(YalinParseError.DUPLICATE_KEY, dup.error)
+    assertEquals(7L, dup.offset)
+    val bad = assertThrows(YalinParseException::class.java) { YalinJson.parseTree("[1,]") }
+    assertEquals(YalinParseError.UNEXPECTED_CHARACTER, bad.error)
+    val deep = "[".repeat(1024) + "]".repeat(1024)
+    var v = YalinJson.parseTree(deep)
+    repeat(1023) { v = (v as YalinArray)[0] }
+    assertEquals(emptyList<YalinValue>(), v)
   }
 
   @Test

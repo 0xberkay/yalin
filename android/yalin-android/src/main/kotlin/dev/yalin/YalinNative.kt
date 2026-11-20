@@ -27,6 +27,9 @@ internal object YalinNative {
   /** One-shot parse + query; encoded results (status carries parse errors). */
   @JvmStatic external fun project(input: ByteArray, paths: ByteArray): ByteArray
 
+  /** One-shot parse into the encoded tree of `codec::tree`; status carries parse errors. */
+  @JvmStatic external fun parseTree(input: ByteArray): ByteArray
+
   /** Idempotent. */
   @JvmStatic external fun close(handle: Long)
 

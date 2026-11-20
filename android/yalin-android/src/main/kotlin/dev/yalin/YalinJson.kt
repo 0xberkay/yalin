@@ -30,6 +30,16 @@ object YalinJson {
   fun project(input: ByteArray, vararg paths: String): YalinProjection =
     YalinProjection(paths, YalinNative.project(input, YalinNative.encodePaths(paths)))
 
+  /**
+   * Parses [input] into an immutable [YalinValue] tree in one native call.
+   * Stricter than [parse]: a repeated object key throws [YalinParseException]
+   * with [YalinParseError.DUPLICATE_KEY].
+   */
+  @JvmStatic fun parseTree(input: ByteArray): YalinValue = YalinTreeDecoder.decode(YalinNative.parseTree(input))
+
+  /** Like [parseTree]; [input] is encoded to UTF-8 first, so error offsets are UTF-8 byte offsets. */
+  @JvmStatic fun parseTree(input: String): YalinValue = parseTree(input.encodeToByteArray())
+
   private fun open(code: Long): YalinDocument {
     if (code < 0) throw YalinParseException.fromCode(code)
     return YalinDocument(code)

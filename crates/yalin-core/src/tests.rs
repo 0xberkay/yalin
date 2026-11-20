@@ -55,6 +55,105 @@ fn to_serde(v: Value<'_>) -> Serde {
     }
 }
 
+/// Builds a `serde_json::Value` from [`Value::walk`] events.
+#[derive(Default)]
+struct SerdeBuilder {
+    /// Open containers, with the pending key for objects.
+    stack: Vec<(Serde, Option<String>)>,
+    key: Option<String>,
+    done: Option<Serde>,
+    lens: Vec<usize>,
+}
+
+impl SerdeBuilder {
+    fn put(&mut self, v: Serde) {
+        match self.stack.last_mut() {
+            Some((Serde::Array(a), _)) => a.push(v),
+            Some((Serde::Object(o), _)) => drop(o.insert(self.key.take().unwrap(), v)),
+            Some(_) => unreachable!(),
+            None => self.done = Some(v),
+        }
+    }
+    fn end(&mut self, len: usize) {
+        let (v, key) = self.stack.pop().unwrap();
+        let actual = match &v {
+            Serde::Array(a) => a.len(),
+            Serde::Object(o) => o.len(),
+            _ => unreachable!(),
+        };
+        assert_eq!(actual, len);
+        self.lens.push(len);
+        self.key = key;
+        self.put(v);
+    }
+}
+
+impl Visitor for SerdeBuilder {
+    fn null(&mut self) {
+        self.put(Serde::Null)
+    }
+    fn bool(&mut self, value: bool) {
+        self.put(Serde::Bool(value))
+    }
+    fn number(&mut self, text: &str) {
+        self.put(serde_json::from_str(text).unwrap())
+    }
+    fn string(&mut self, value: &str) {
+        self.put(Serde::String(value.to_owned()))
+    }
+    fn key(&mut self, key: &str) {
+        self.key = Some(key.to_owned())
+    }
+    fn begin_array(&mut self) {
+        self.stack.push((Serde::Array(Vec::new()), self.key.take()))
+    }
+    fn end_array(&mut self, len: usize) {
+        self.end(len)
+    }
+    fn begin_object(&mut self) {
+        self.stack.push((Serde::Object(Default::default()), self.key.take()))
+    }
+    fn end_object(&mut self, len: usize) {
+        self.end(len)
+    }
+}
+
+fn walk_to_serde(v: Value<'_>) -> Result<Serde, JsonError> {
+    let mut b = SerdeBuilder::default();
+    v.walk(&mut b)?;
+    assert!(b.stack.is_empty());
+    Ok(b.done.unwrap())
+}
+
+#[test]
+fn walk_rejects_duplicate_keys() {
+    let dup = |s: &str| {
+        let doc = Document::parse(s.as_bytes()).unwrap();
+        walk_to_serde(doc.root()).map(drop).map_err(|e| (e.kind(), e.offset()))
+    };
+    assert_eq!(dup(r#"{"a":1,"a":2}"#), Err((ErrorKind::DuplicateKey, 7)));
+    assert_eq!(dup(r#"{"a":1,"\u0061":2}"#), Err((ErrorKind::DuplicateKey, 7)));
+    assert_eq!(dup(r#"[{"a":{"a":1}},{"a":[{"a":0}]}]"#), Ok(()));
+    assert_eq!(dup(r#"{"a":{"b":1},"b":2,"c":{"b":1,"c":2}}"#), Ok(()));
+    // Past the linear scan: every key distinct, then one repeat of an early key.
+    let many: Vec<String> = (0..100).map(|i| format!(r#""k{i}":{i}"#)).collect();
+    assert_eq!(dup(&format!("{{{}}}", many.join(","))), Ok(()));
+    let repeat = format!(r#"{{{},"k3":0}}"#, many.join(","));
+    assert_eq!(dup(&repeat), Err((ErrorKind::DuplicateKey, repeat.len() - 7)));
+    let repeat_late = format!(r#"{{{},"k99":0}}"#, many.join(","));
+    assert!(dup(&repeat_late).is_err());
+}
+
+#[test]
+fn walk_reports_lengths_and_subtrees() {
+    let doc = Document::parse(br#"{"a":[1,[],{}],"b":{"c":"x\ny"},"d":[]}"#.as_slice()).unwrap();
+    let mut b = SerdeBuilder::default();
+    doc.root().walk(&mut b).unwrap();
+    assert_eq!(b.lens, [0, 0, 3, 1, 0, 3]);
+    assert_eq!(walk_to_serde(doc.get("b").unwrap()).unwrap(), serde_json::json!({"c": "x\ny"}));
+    assert_eq!(walk_to_serde(doc.get("a[0]").unwrap()).unwrap(), serde_json::json!(1));
+}
+
 /// Compares accept/reject and decoded values with serde_json.
 /// Returns false when the difference is a documented, intended one.
 fn differential(input: &[u8]) -> bool {
@@ -63,6 +162,10 @@ fn differential(input: &[u8]) -> bool {
     match (ours, theirs) {
         (Ok(doc), Ok(expected)) => {
             assert_eq!(to_serde(doc.root()), expected, "value mismatch: {:?}", String::from_utf8_lossy(input));
+            match walk_to_serde(doc.root()) {
+                Ok(walked) => assert_eq!(walked, expected, "walk mismatch: {:?}", String::from_utf8_lossy(input)),
+                Err(e) => assert_eq!(e.kind(), ErrorKind::DuplicateKey),
+            }
             true
         }
         (Err(_), Err(_)) => true,

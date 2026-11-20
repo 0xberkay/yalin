@@ -11,6 +11,7 @@
 
 mod codec;
 mod registry;
+pub mod tree;
 
 use jni::EnvUnowned;
 use jni::errors::ThrowRuntimeExAndDefault;
@@ -133,6 +134,20 @@ pub extern "system" fn Java_dev_yalin_YalinNative_project<'l>(
             Err(e) => codec::parse_failure(&e),
         };
         Ok(env.byte_array_from_slice(&out)?)
+    })
+    .resolve::<ThrowRuntimeExAndDefault>()
+}
+
+/// One-shot parse into an encoded tree ([`tree`]), without registering a document.
+#[unsafe(no_mangle)]
+pub extern "system" fn Java_dev_yalin_YalinNative_parseTree<'l>(
+    mut env: EnvUnowned<'l>,
+    _class: JClass<'l>,
+    input: JByteArray<'l>,
+) -> JByteArray<'l> {
+    env.with_env(|env| -> Result<JByteArray<'_>, BridgeError> {
+        let input = env.convert_byte_array(&input)?;
+        Ok(env.byte_array_from_slice(&tree::encode(&input))?)
     })
     .resolve::<ThrowRuntimeExAndDefault>()
 }

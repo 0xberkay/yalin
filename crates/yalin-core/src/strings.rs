@@ -75,17 +75,26 @@ fn hex4(content: &[u8], at: usize) -> Option<u16> {
     })
 }
 
-/// Decodes escapes. `content` must have passed [`validate`].
+/// Decodes escapes. `content` must have passed [`validate_escapes`].
 pub(crate) fn unescape(content: &[u8]) -> String {
     let mut out = Vec::with_capacity(content.len());
+    unescape_into(content, &mut out);
+    // Validated input splits only at ASCII '\', so this cannot fail; stay panic-free regardless.
+    String::from_utf8(out).unwrap_or_else(|e| String::from_utf8_lossy(e.as_bytes()).into_owned())
+}
+
+/// Appends the decoded `content` to `out`. `content` must have passed
+/// [`validate_escapes`] and be valid UTF-8; then so are the appended bytes.
+pub(crate) fn unescape_into(content: &[u8], out: &mut Vec<u8>) {
+    out.reserve(content.len());
     let mut i = 0;
     while i < content.len() {
-        let b = content[i];
-        if b != b'\\' {
-            out.push(b);
-            i += 1;
-            continue;
-        }
+        let Some(k) = find_backslash(content, i) else {
+            out.extend_from_slice(&content[i..]);
+            return;
+        };
+        out.extend_from_slice(&content[i..k]);
+        i = k;
         let decoded = match content[i + 1] {
             b'b' => '\u{8}',
             b'f' => '\u{C}',
@@ -110,8 +119,6 @@ pub(crate) fn unescape(content: &[u8]) -> String {
         let mut buf = [0u8; 4];
         out.extend_from_slice(decoded.encode_utf8(&mut buf).as_bytes());
     }
-    // Validated input splits only at ASCII '\', so this cannot fail; stay panic-free regardless.
-    String::from_utf8(out).unwrap_or_else(|e| String::from_utf8_lossy(e.as_bytes()).into_owned())
 }
 
 #[cfg(test)]

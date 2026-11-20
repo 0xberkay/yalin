@@ -22,7 +22,7 @@ pub(crate) fn parse(input: &[u8], limits: &Limits) -> Result<Vec<Node>, JsonErro
         len: 0,
         pos: 0,
         tape: Vec::with_capacity(tape_capacity(input.len())),
-        stack: Vec::new(),
+        stack: Vec::with_capacity(16),
         context: Context::Top,
         max_depth: limits.max_depth,
     }

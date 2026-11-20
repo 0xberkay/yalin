@@ -2,7 +2,8 @@
 //!
 //! Parsing runs in two stages — a structural scanner (stage 1) and a grammar,
 //! UTF-8, escape and number validator that builds a compact tape (stage 2).
-//! Values are decoded only when queried.
+//! Values are decoded only when queried, or streamed in full with
+//! [`Value::walk`] to build another representation.
 //!
 //! ```
 //! use yalin_core::{Document, QueryError};
@@ -23,12 +24,14 @@ mod scanner;
 mod strings;
 mod tape;
 mod utf8;
+mod walk;
 
 #[cfg(test)]
 mod tests;
 
 pub use error::{ErrorKind, JsonError};
 pub use query::{Document, QueryError, Value, ValueKind};
+pub use walk::Visitor;
 
 /// Resource guards applied while parsing.
 #[derive(Clone, Debug)]

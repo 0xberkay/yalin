@@ -25,6 +25,8 @@ enum class YalinParseError {
   INVALID_NUMBER,
   DEPTH_LIMIT_EXCEEDED,
   TRAILING_CHARACTERS,
+  /** An object key repeats. Only [YalinJson.parseTree] reports it; paths take the first occurrence. */
+  DUPLICATE_KEY,
   UNKNOWN,
 }
 
