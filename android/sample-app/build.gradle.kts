@@ -13,6 +13,7 @@ android {
     targetSdk = 37
     versionCode = 1
     versionName = "1.0"
+    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
   buildTypes {
@@ -31,6 +32,11 @@ android {
     buildConfig = false
     shaders = false
   }
+  sourceSets {
+    getByName("main") {
+      kotlin.directories.add(rootProject.file("shared-benchmark/kotlin").path)
+    }
+  }
 
   packaging {
     resources {
@@ -45,6 +51,10 @@ kotlin {
 
 dependencies {
   implementation(project(":yalin-android"))
+  implementation(libs.gson)
+  implementation(libs.moshi)
+  implementation(libs.kotlinx.serialization.json)
+  implementation(libs.fastjson2)
 
   val composeBom = platform(libs.androidx.compose.bom)
   implementation(composeBom)

@@ -19,6 +19,11 @@ android {
   }
   // Benchmarks must run non-debuggable; the test APK is signed with the debug key.
   testBuildType = "release"
+  sourceSets {
+    getByName("androidTest") {
+      kotlin.directories.add(rootProject.file("shared-benchmark/kotlin").path)
+    }
+  }
   buildTypes {
     release {
       isDefault = true

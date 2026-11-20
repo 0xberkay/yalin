@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Yalin Sample</string>
+    <string name="parse_lab">JSON parse lab</string>
+    <string name="parse_lab_description">Compare full-tree JSON parsers on this device.</string>
+    <string name="catalog_sources">Benchmark catalogs</string>
+    <string name="vega_source">Vega Cars</string>
+    <string name="vega_source_button">Vega Cars · HTTPS</string>
+    <string name="choose_source">Tap a source to measure parse times.</string>
+    <string name="measuring_local">Measuring parsers…</string>
+    <string name="measuring_network">Downloading Vega Cars and measuring parsers…</string>
+    <string name="measure_error">Could not complete the run (%1$s). Tap the source to retry.</string>
+    <string name="parse_time_title">%1$s parse times</string>
+    <string name="payload_summary">%1$,d bytes · %2$,d records</string>
+    <string name="measurement_note">Median of %1$d runs after warm-up. Download and dataset generation are excluded.</string>
+    <string name="previous_results">Fastest in previous runs</string>
+    <string name="fastest_result">%1$s · %2$s</string>
+    <string name="time_microseconds">%1$.1f µs</string>
+    <string name="time_milliseconds">%1$.2f ms</string>
+    <string name="show_cars">Show parsed cars</string>
+    <string name="hide_cars">Hide parsed cars</string>
 </resources>

@@ -73,17 +73,13 @@ Typed getters return `null` for a missing field or a JSON `null`; use `kind` to 
 
 Yalın ships an [agent skill](docs/skills/yalin/SKILL.md) that teaches coding agents how to add the library, choose between `project`, `parse` and `parseTree`, and handle its errors.
 
-**Claude Code:** install it as a plugin from this repository.
+**Claude Code:** clone this repository and install the plugin from its local marketplace.
 
-```
-/plugin install yalin --marketplace 0xberkay/yalin
-```
-
-On Claude Code older than 2.1.275, add the marketplace first:
-
-```
-/plugin marketplace add 0xberkay/yalin
-/plugin install yalin@yalin
+```sh
+git clone https://github.com/0xberkay/yalin.git
+cd yalin
+claude plugin marketplace add ./docs
+claude plugin install yalin@yalin
 ```
 
 **Codex and OpenCode:** both read skills from `~/.agents/skills`, so one command sets up both.
@@ -151,6 +147,14 @@ cargo test --workspace --locked
 cd android
 ./gradlew :yalin-android:testDebugUnitTest :yalin-android:assembleRelease
 ```
+
+## Android sample app
+
+The [sample app](android/sample-app) compares full-tree JSON parse times on your device using the benchmark catalogs and the Vega Cars dataset.
+
+<p align="center">
+  <img src="docs/assets/android-parse-lab.png" alt="Android sample app comparing five JSON parsers on the 1 MB benchmark catalog" width="386">
+</p>
 
 ## License
 

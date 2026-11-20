@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "yalin",
-      "source": "./docs",
+      "source": "./",
       "description": "Skill for adding Yalın to an Android project and reading JSON with it."
     }
   ]

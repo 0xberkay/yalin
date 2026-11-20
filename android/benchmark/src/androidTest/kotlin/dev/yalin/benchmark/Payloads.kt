@@ -2,6 +2,7 @@ package dev.yalin.benchmark
 
 import com.alibaba.fastjson2.annotation.JSONCreator
 import com.squareup.moshi.JsonClass
+import dev.yalin.benchmarkinput.BenchmarkPayloadSize
 import kotlinx.serialization.Serializable
 
 /** Product-list payloads generated deterministically to a target size. */
@@ -22,31 +23,10 @@ data class Extracted(val total: Long, val firstName: String, val midPrice: Doubl
 
 object Payloads {
   val all: List<Payload> by lazy {
-    listOf("1KB" to 1_024, "16KB" to 16_384, "256KB" to 262_144, "1MB" to 1_048_576)
-      .map { (label, size) -> generate(label, size) }
-  }
-
-  private fun generate(label: String, targetBytes: Int): Payload {
-    val items = StringBuilder()
-    var count = 0
-    // Leave room for the envelope (~60 bytes).
-    while (items.length + 60 < targetBytes || count == 0) {
-      if (count > 0) items.append(',')
-      appendItem(items, count++)
+    BenchmarkPayloadSize.entries.map { size ->
+      val input = size.generate()
+      Payload(size.label.replace(" ", ""), input.text, input.itemCount)
     }
-    val json =
-      """{"meta":{"page":1,"total":$count,"next":null},"items":[$items]}"""
-    return Payload(label, json, count)
-  }
-
-  private fun appendItem(sb: StringBuilder, i: Int) {
-    val price = (i * 37 % 100_000) / 100.0 + 0.5
-    val rating = (i * 7 % 50) / 10.0
-    // Non-ASCII, an escaped quote and a \u escape keep string decoding honest.
-    sb.append("""{"id":${1_000_000 + i},"sku":"SKU-${i.toString().padStart(6, '0')}",""")
-      .append(""""name":"Café $i \"élég\" thé","price":$price,"inStock":${i % 3 != 0},""")
-      .append(""""tags":["t${i % 5}","t${i % 7}","discount"],""")
-      .append(""""seller":{"id":${i % 97},"name":"Vendeur ${i % 97}","rating":$rating}}""")
   }
 }
 
