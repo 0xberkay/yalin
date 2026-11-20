@@ -25,11 +25,11 @@ Yalın reads UTF-8 JSON straight from a `ByteArray`. A native parser validates t
 
 ```kotlin
 dependencies {
-    implementation("io.github.0xberkay:yalin-android:0.0.1")
+    implementation("io.github.0xberkay:yalin-android:0.0.2")
 }
 ```
 
-Requires Android API 24+, `arm64-v8a` or `x86_64`, and `compileSdk` 37 or later. Version 0.0.1 is available on Maven Central. To use the latest source, build from source or use the [local Maven publication](docs/releasing.md).
+Requires Android API 24+, `arm64-v8a` or `x86_64`, and `compileSdk` 37 or later. Version 0.0.2 is available on Maven Central. To use the latest source, build from source or use the [local Maven publication](docs/releasing.md).
 
 ### Read a few fields
 
@@ -68,6 +68,34 @@ val name = (user["name"] as YalinString).value
 An integer that fits in a `Long` becomes `YalinLong`, a number with a fraction or exponent becomes `YalinDouble`, and anything else becomes `YalinBigNumber`. `parseTree` also accepts a `String`.
 
 Typed getters return `null` for a missing field or a JSON `null`; use `kind` to tell them apart. Invalid JSON throws `YalinParseException`.
+
+## Use with AI agents
+
+Yalın ships an [agent skill](docs/skills/yalin/SKILL.md) that teaches coding agents how to add the library, choose between `project`, `parse` and `parseTree`, and handle its errors.
+
+**Claude Code:** install it as a plugin from this repository.
+
+```
+/plugin install yalin --marketplace 0xberkay/yalin
+```
+
+On Claude Code older than 2.1.275, add the marketplace first:
+
+```
+/plugin marketplace add 0xberkay/yalin
+/plugin install yalin@yalin
+```
+
+**Codex and OpenCode:** both read skills from `~/.agents/skills`, so one command sets up both.
+
+```sh
+mkdir -p ~/.agents/skills/yalin && curl -fsSL -o ~/.agents/skills/yalin/SKILL.md \
+  https://raw.githubusercontent.com/0xberkay/yalin/main/docs/skills/yalin/SKILL.md
+```
+
+To share the skill with your team, put it in the project instead: use `.agents/skills/yalin/` in the repository root and commit it. Older Codex versions read only `~/.codex/skills`, and OpenCode also reads `~/.config/opencode/skills`; use the same command with that folder.
+
+**Other agents:** copy [SKILL.md](docs/skills/yalin/SKILL.md) into the agent's skills folder as `yalin/SKILL.md`, or add it to the agent's instructions file.
 
 ## Benchmarks
 

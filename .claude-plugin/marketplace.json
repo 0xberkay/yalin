@@ -1,0 +1,14 @@
+{
+  "name": "yalin",
+  "owner": {
+    "name": "0xberkay"
+  },
+  "description": "Claude Code plugin for Yalın, a fast and strict JSON library for Android.",
+  "plugins": [
+    {
+      "name": "yalin",
+      "source": "./docs",
+      "description": "Skill for adding Yalın to an Android project and reading JSON with it."
+    }
+  ]
+}

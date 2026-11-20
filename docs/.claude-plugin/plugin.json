@@ -1,0 +1,12 @@
+{
+  "name": "yalin",
+  "description": "Teaches Claude how to add and use Yalın, a fast and strict JSON library for Android.",
+  "version": "0.0.2",
+  "author": {
+    "name": "0xberkay"
+  },
+  "homepage": "https://github.com/0xberkay/yalin",
+  "repository": "https://github.com/0xberkay/yalin",
+  "license": "Apache-2.0",
+  "keywords": ["android", "json", "kotlin", "parser"]
+}
