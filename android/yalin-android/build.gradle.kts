@@ -27,7 +27,7 @@ tasks.withType<Jar>().matching { it.name == "sourceReleaseJar" || it.name == "do
 
 mavenPublishing {
   configure(AndroidSingleVariantLibrary(javadocJar = JavadocJar.Dokka("dokkaGeneratePublicationHtml")))
-  coordinates("io.github.0xberkay", "yalin-android", "0.0.1")
+  coordinates("io.github.0xberkay", "yalin-android", "0.0.2")
   publishToMavenCentral()
   signAllPublications()
 

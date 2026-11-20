@@ -4,7 +4,7 @@ members = ["crates/yalin-core", "crates/yalin-jni", "crates/yalin-bench"]
 
 [workspace.package]
 edition = "2024"
-version = "0.0.1"
+version = "0.0.2"
 license = "Apache-2.0"
 
 # Shipping profile for libyalin.so. Keep panic = "unwind": the JNI layer

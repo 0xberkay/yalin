@@ -25,7 +25,7 @@ dependencies {
 }
 ```
 
-Requires Android API 24+, `arm64-v8a` or `x86_64`, and `compileSdk` 37 or later. Build from source or use the [local Maven publication](docs/releasing.md) until the first Maven Central release is available.
+Requires Android API 24+, `arm64-v8a` or `x86_64`, and `compileSdk` 37 or later. Version 0.0.1 is available on Maven Central. To use the latest source, build from source or use the [local Maven publication](docs/releasing.md).
 
 ### Read a few fields
 
