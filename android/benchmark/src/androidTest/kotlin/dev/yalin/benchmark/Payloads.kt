@@ -5,7 +5,9 @@ import com.squareup.moshi.JsonClass
 import kotlinx.serialization.Serializable
 
 /** Product-list payloads generated deterministically to a target size. */
-class Payload(val label: String, val bytes: ByteArray, val itemCount: Int) {
+class Payload(val label: String, val text: String, val itemCount: Int) {
+  val bytes = text.encodeToByteArray()
+
   val midIndex = itemCount / 2
   val lastIndex = itemCount - 1
 
@@ -34,7 +36,7 @@ object Payloads {
     }
     val json =
       """{"meta":{"page":1,"total":$count,"next":null},"items":[$items]}"""
-    return Payload(label, json.encodeToByteArray(), count)
+    return Payload(label, json, count)
   }
 
   private fun appendItem(sb: StringBuilder, i: Int) {

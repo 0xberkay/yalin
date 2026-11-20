@@ -642,6 +642,7 @@ dependencies = [
  "serde_json",
  "sonic-rs",
  "yalin-core",
+ "yalin-jni",
 ]
 
 [[package]]

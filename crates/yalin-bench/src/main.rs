@@ -71,6 +71,8 @@ const SCENARIOS: &[(&str, Scenario)] = &[
     ("utf8_only", |p| std::str::from_utf8(&p.bytes).ok().map(|_| dummy())),
     ("yalin_validate", |p| yalin_core::validate(&p.bytes).ok().map(|_| dummy())),
     ("yalin_extract", yalin_extract),
+    // What `YalinJson.parseTree` does in native code: parse, walk, encode the tree.
+    ("yalin_tree", |p| (yalin::tree::encode(&p.bytes)[..8] == [0; 8]).then(dummy)),
     ("serde_ignored", |p| serde_json::from_slice::<IgnoredAny>(&p.bytes).ok().map(|_| dummy())),
     ("serde_value", serde_value),
     ("sonic_ignored", |p| sonic_rs::from_slice::<IgnoredAny>(&p.bytes).ok().map(|_| dummy())),
