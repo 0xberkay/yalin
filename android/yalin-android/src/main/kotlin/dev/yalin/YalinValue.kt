@@ -5,7 +5,7 @@ import java.math.BigDecimal
 /**
  * An immutable JSON value from [YalinJson.parseTree].
  *
- * Numbers keep their precision: an integer that fits a `Long` is [YalinLong],
+ * An integer that fits a `Long` is [YalinLong],
  * any other integer is [YalinBigNumber], a number with a fraction or exponent
  * is [YalinDouble] unless it overflows `Double`, then it is [YalinBigNumber].
  */
@@ -43,7 +43,7 @@ data class YalinLong(val value: Long) : YalinValue {
 
 data class YalinDouble(val value: Double) : YalinValue
 
-/** A number that neither `Long` nor `Double` represents exactly enough; see [YalinValue]. */
+/** A number outside the range of `Long` or finite `Double`; see [YalinValue]. */
 data class YalinBigNumber(val value: BigDecimal) : YalinValue
 
 /** A JSON array. Elements are in document order. */

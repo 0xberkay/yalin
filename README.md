@@ -10,11 +10,11 @@ Yalın reads UTF-8 JSON straight from a `ByteArray`. A native parser validates t
 
 ## Why Yalın
 
-- **3–10× faster field reads.** Pull a few values out of a large response without building a tree for it.
+- **Fast field reads.** Pull a few values out of a large response without building a tree for it.
 - **Fastest full tree from 16 KB up.** 1.3× faster than fastjson2 and 2.7× faster than Gson at 1 MB.
 - **Half the garbage.** A full tree creates about half the objects fastjson2 does and a quarter of what Gson does, so the GC has less to do.
 - **Strict by default.** Invalid UTF-8, bad escapes, trailing commas and control characters are rejected. Duplicate keys are rejected in trees.
-- **No precision loss.** Integers stay `Long`, big numbers become `BigDecimal`.
+- **Numeric types.** Integers use `Long` or `BigDecimal`; fractional values use `Double` when finite.
 - **Small surface.** Three entry points, no annotations, no code generation, no reflection.
 
 ## Usage
@@ -25,7 +25,7 @@ dependencies {
 }
 ```
 
-Requires Android API 24+, `arm64-v8a` or `x86_64`, and `compileSdk` 37 or later. The first Maven Central release is on its way; until then, build from source or use the [local Maven publication](docs/releasing.md).
+Requires Android API 24+, `arm64-v8a` or `x86_64`, and `compileSdk` 37 or later. Build from source or use the [local Maven publication](docs/releasing.md) until the first Maven Central release is available.
 
 ### Read a few fields
 
