@@ -1,6 +1,10 @@
 /target/
+/plan/
 .gradle/
 .kotlin/
 .idea/
 build/
 local.properties
+
+replay_pid*.log
+hs_err_pid*.log
