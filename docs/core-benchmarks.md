@@ -18,6 +18,31 @@ checks that yalin and sonic-rs extract the same 4 values as serde_json before ti
 The `*_ignored` rows are not the same work as yalin: they build no index. serde_json may also skip
 some string checks when it ignores a value, so treat them as a rough upper bound.
 
+## Samsung Galaxy A30s (Exynos 7904), Android 11, 2026-11-20
+
+Current core at commit `17dce04`, running on cpu7 (2.08 GHz maximum). Clocks were not
+locked; each result is the median of 11 runs of 200 ms after a warm-up. All scenarios
+ran in one invocation, using the same generated payloads. These are native-only results;
+they exclude JNI and Kotlin object creation.
+
+| Scenario | 1 KB | 16 KB | 256 KB | 1 MB |
+|---|---:|---:|---:|---:|
+| utf8_only | 1.06 µs | 14.52 µs | 228.75 µs | 0.918 ms |
+| yalin_validate | 12.11 µs | 162.84 µs | 2.855 ms | 11.390 ms |
+| yalin_extract | 14.02 µs | 166.15 µs | 2.901 ms | 11.725 ms |
+| yalin_tree | 22.57 µs | 306.09 µs | 5.347 ms | 21.341 ms |
+| serde_ignored | 6.61 µs | 91.54 µs | 1.435 ms | 5.738 ms |
+| serde_value | 46.08 µs | 827.61 µs | 16.082 ms | 62.294 ms |
+| sonic_ignored | 7.94 µs | 111.82 µs | 1.758 ms | 7.048 ms |
+| sonic_value | 8.01 µs | 93.45 µs | 1.974 ms | 7.892 ms |
+
+For the 1 MB four-field workload, `sonic_value` took 7.892 ms versus 11.725 ms
+for `yalin_extract`; `serde_value` took 62.294 ms. All three return the same
+four values, but they use different intermediate representations and may differ in
+validation behavior. `yalin_tree` additionally encodes a tree for transfer to Kotlin,
+so it is not a direct full-tree comparison with the Rust `Value` rows. The payload is
+one synthetic catalog; results can differ on other data and devices.
+
 ## Run
 
 ```bash
