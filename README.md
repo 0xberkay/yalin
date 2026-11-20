@@ -1,5 +1,9 @@
 # Yalın
 
+<p align="center">
+  <img src="docs/assets/yalin-mascot.png" alt="Yalın mascot, a Rust crab holding an Android robot" width="360">
+</p>
+
 **Fast, strict JSON for Android, powered by a SIMD Rust parser.**
 
 Yalın reads UTF-8 JSON straight from a `ByteArray`. A native parser validates the input and indexes it, and your Kotlin or Java code asks for what it needs: a few fields in one call, or the whole tree as immutable Kotlin values.
@@ -95,6 +99,19 @@ Measured with AndroidX Microbenchmark on an Infinix X6833B (Helio G99, Android 1
 </p>
 
 Each call crosses JNI once. The core checks UTF-8 over the whole input with NEON, finds structural characters 64 bytes at a time with NEON or SSE2, and records the document on a compact tape. Path queries read the tape directly. Trees are sent to Kotlin in a compact binary form, and repeated keys and short strings are reused across trees.
+
+<pre align="center">
+       _     _
+      (o)   (o)
+  .-.(  \___/  ).-.
+ /   /  _   _  \   \
+ \  (  (     )  )  /
+  `-'\  `---'  /`-'
+      `-------'
+</pre>
+<p align="center">
+  <strong>Enjoying Yalın?</strong> Give the project a star on GitHub!
+</p>
 
 ## Build from source
 
