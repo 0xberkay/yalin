@@ -104,7 +104,7 @@ class YalinProjection internal constructor(private val paths: Array<out String>,
     }
 
   private companion object {
-    // Tags from codec.rs.
+    // Tags from crates/yalin-wire/src/codec.rs.
     const val MISSING: Byte = 0
     const val NULL: Byte = 1
     const val FALSE: Byte = 2

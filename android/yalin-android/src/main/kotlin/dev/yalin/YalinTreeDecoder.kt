@@ -2,7 +2,7 @@ package dev.yalin
 
 import java.math.BigDecimal
 
-/** Decodes the tree format of crates/yalin-jni/src/tree.rs. Keep both in sync. */
+/** Decodes the tree format of crates/yalin-wire/src/tree.rs. Keep both in sync. */
 internal class YalinTreeDecoder private constructor(private val data: ByteArray) {
   private var pos = 0
 

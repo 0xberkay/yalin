@@ -5,7 +5,7 @@ import java.nio.ByteOrder
 
 /**
  * Raw JNI surface of `libyalin.so` (crates/yalin-jni). Wire formats are
- * documented in `crates/yalin-jni/src/codec.rs`; keep both sides in sync.
+ * documented in `crates/yalin-wire/src/codec.rs`; keep both sides in sync.
  *
  * Input bytes are copied into native memory during each call, so callers may
  * reuse or mutate their arrays afterwards.

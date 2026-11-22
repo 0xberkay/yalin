@@ -11,7 +11,7 @@ enum class YalinKind {
   OBJECT,
 }
 
-/** Why input was rejected. Ordinals match `parse_error_code` in codec.rs. */
+/** Why input was rejected. Ordinals match `parse_error_code` in crates/yalin-wire/src/codec.rs. */
 enum class YalinParseError {
   INPUT_TOO_LARGE,
   UNEXPECTED_EOF,
