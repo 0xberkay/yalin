@@ -71,6 +71,19 @@ Inputs are any `ContiguousBytes` (`Data`, `[UInt8]`, …) or a `String`. Every c
 
 Apple's Foundation is faster than the Linux one, so expect smaller ratios on iOS. Device numbers have not been measured yet; to get them, run the same code from a Release build of an app on an iPhone.
 
+## Run the iOS demo
+
+Install XcodeGen with `brew install xcodegen`. From the repository root:
+
+```sh
+apple/build-xcframework.sh
+cd apple/Examples/YalinDemo
+xcodegen generate
+open YalinDemo.xcodeproj
+```
+
+Select an iOS simulator or configure a signing team in Xcode to run on an iPhone. Use a Release build on a device for benchmark timings.
+
 ## Safety rules at the boundary
 
 - Input pointers are read only during the call and never retained.

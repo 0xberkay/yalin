@@ -1,0 +1,33 @@
+name: YalinDemo
+options:
+  bundleIdPrefix: dev.yalin
+  deploymentTarget:
+    iOS: "16.0"
+packages:
+  Yalin:
+    path: ../../..
+  IkigaJSON:
+    url: https://github.com/orlandos-nl/IkigaJSON.git
+    exactVersion: 2.3.2
+  ZippyJSON:
+    url: https://github.com/michaeleisel/ZippyJSON.git
+    exactVersion: 1.2.15
+targets:
+  YalinDemo:
+    type: application
+    platform: iOS
+    sources: [YalinDemo]
+    dependencies:
+      - package: Yalin
+        product: Yalin
+      - package: IkigaJSON
+        product: IkigaJSON
+      - package: ZippyJSON
+        product: ZippyJSON
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.yalin.demo
+        SWIFT_VERSION: "5.0"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Yalın Demo

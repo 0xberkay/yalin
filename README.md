@@ -96,6 +96,10 @@ let first = tree["items"]?[0]?["price"]?.doubleValue
 
 Requires iOS 13 or macOS 10.15. See [Swift guide](docs/apple.md) for errors, numbers, threading, performance notes and benchmarks.
 
+### iOS demo
+
+The SwiftUI demo has a JSON playground and a benchmark for generated catalogs and the Vega Cars dataset. The benchmark reports median times for Yalın, Foundation, IkigaJSON and ZippyJSON. The [Swift guide](docs/apple.md#run-the-ios-demo) has build instructions.
+
 ## Use with AI agents
 
 Yalın ships an [agent skill](docs/skills/yalin/SKILL.md) that teaches coding agents how to add the library, choose between `project`, `parse` and `parseTree`, and handle its errors.
