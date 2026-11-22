@@ -7,7 +7,10 @@
 //! - escaped bytes: walk the (rare) backslash bits, each one escapes the next byte;
 //! - string region: prefix XOR of the unescaped quotes; a control byte (< 0x20)
 //!   inside it is an error, so stage 2 never looks for them;
-//! - atom starts: "other" bytes whose predecessor is not "other".
+//! - atom starts: "other" bytes whose predecessor is not "other";
+//! - escaped strings: the closing quote of every string that contains a backslash
+//!   is recorded in [`BlockScanner::escaped_closes`], so stage 2 never searches
+//!   plain strings for escapes.
 //!
 //! Unlike [`super::ScalarScanner`], a backslash escapes the next byte even outside
 //! strings. That only changes the output for input that is already invalid (a bare
@@ -40,6 +43,11 @@ pub(crate) struct BlockScanner {
     prev_other: bool,
     /// Offset of the most recent unescaped quote (the opening one, if a string is open).
     last_quote: usize,
+    /// The string still open at the end of the previous block contains a backslash.
+    string_backslash: bool,
+    /// Closing-quote offsets, in order, of the strings with a backslash whose
+    /// closing quote was written by the latest [`Scanner::fill`] call.
+    escaped_closes: Vec<u32>,
 }
 
 impl Scanner for BlockScanner {
@@ -47,6 +55,7 @@ impl Scanner for BlockScanner {
         debug_assert!(input.len() <= u32::MAX as usize);
         let n = input.len();
         let mut len = 0;
+        self.escaped_closes.clear();
         while self.pos < n && len < CHUNK {
             let base = self.pos;
             let classes = match input.get(base..base + 64) {
@@ -80,6 +89,11 @@ impl BlockScanner {
             let at = base + control.trailing_zeros() as usize;
             return Err(JsonError::new(ErrorKind::ControlCharacterInString, at));
         }
+        let backslash = c.backslash & in_string;
+        if backslash != 0 || self.string_backslash {
+            // Closing quotes are the quotes outside the `in_string` mask.
+            self.track_escapes(quote & !in_string, backslash, in_string >> 63 == 1, base);
+        }
         self.in_string = in_string >> 63 == 1;
         if quote != 0 {
             self.last_quote = base + 63 - quote.leading_zeros() as usize;
@@ -89,6 +103,32 @@ impl BlockScanner {
         let atom_start = other & !(other << 1 | self.prev_other as u64);
         self.prev_other = other >> 63 == 1;
         Ok((c.op & !string) | quote | atom_start)
+    }
+
+    /// Records the closing quotes (`closes`) of strings with a backslash. `backslash`
+    /// holds only backslashes inside strings, so the ones between a closing quote and
+    /// the next belong to the string that the next quote closes.
+    fn track_escapes(&mut self, mut closes: u64, backslash: u64, ends_in_string: bool, base: usize) {
+        // Bits `0..k`, for `k` in `0..=64`.
+        let below = |k: u32| if k >= 64 { !0 } else { (1u64 << k) - 1 };
+        let mut pending = self.string_backslash;
+        let mut from = 0;
+        while closes != 0 {
+            let at = closes.trailing_zeros();
+            if pending || backslash & below(at) & !below(from) != 0 {
+                self.escaped_closes.push((base + at as usize) as u32);
+            }
+            pending = false;
+            from = at + 1;
+            closes &= closes - 1;
+        }
+        self.string_backslash = ends_in_string && (pending || backslash & !below(from) != 0);
+    }
+
+    /// Closing-quote offsets of the strings with a backslash among the offsets
+    /// written by the latest [`Scanner::fill`] call, in order.
+    pub(crate) fn escaped_closes(&self) -> &[u32] {
+        &self.escaped_closes
     }
 
     /// Bits of bytes escaped by a preceding (itself unescaped) backslash.

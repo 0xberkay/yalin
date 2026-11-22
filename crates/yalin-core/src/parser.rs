@@ -21,6 +21,7 @@ pub(crate) fn parse(input: &[u8], limits: &Limits) -> Result<Vec<Node>, JsonErro
         chunk: vec![0; chunk_capacity(input.len())].into_boxed_slice(),
         len: 0,
         pos: 0,
+        escaped: 0,
         tape: Vec::with_capacity(tape_capacity(input.len())),
         stack: Vec::with_capacity(16),
         context: Context::Top,
@@ -71,6 +72,8 @@ struct Parser<'a> {
     chunk: Box<[u32]>,
     len: usize,
     pos: usize,
+    /// Next unread entry of [`BlockScanner::escaped_closes`] for the current chunk.
+    escaped: usize,
     tape: Vec<Node>,
     /// Open containers: tape index and the enclosing [`Context`] to restore on close.
     stack: Vec<(usize, Context)>,
@@ -176,6 +179,7 @@ impl Parser<'_> {
     fn peek(&mut self) -> Result<Option<usize>, JsonError> {
         if self.pos == self.len {
             self.pos = 0;
+            self.escaped = 0;
             self.len = self.scanner.fill(self.input, &mut self.chunk)?;
         }
         Ok((self.pos < self.len).then(|| self.chunk[self.pos] as usize))
@@ -255,7 +259,14 @@ impl Parser<'_> {
     fn string(&mut self, at: usize) -> Result<(), JsonError> {
         let close = self.next()?;
         debug_assert_eq!(self.input[close], b'"');
-        let has_escape = strings::validate_escapes(&self.input[at + 1..close], at + 1)?;
+        // Every closing quote passes through here in order, so the scanner's list of
+        // escaped strings is consumed in step with the offsets.
+        let has_escape = self.scanner.escaped_closes().get(self.escaped) == Some(&(close as u32));
+        if has_escape {
+            self.escaped += 1;
+            let found = strings::validate_escapes(&self.input[at + 1..close], at + 1)?;
+            debug_assert!(found);
+        }
         let tag = if has_escape { Tag::EscapedString } else { Tag::String };
         self.push(tag, at + 1, close);
         Ok(())

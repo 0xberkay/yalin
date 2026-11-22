@@ -432,3 +432,64 @@ fn control_bytes_in_strings() {
     assert!(validate(b"\t[\r\n1,\t\"a\" ]\n").is_ok());
     assert!(validate(b"\"\x7F\"").is_ok()); // DEL is not a control character in JSON
 }
+
+/// The scanner's list of escaped strings must mark exactly the strings that contain
+/// a backslash, including strings and backslash runs that cross 64-byte blocks and
+/// scanner chunks.
+#[test]
+fn escaped_strings_are_tagged_exactly() {
+    fn check(input: &[u8]) {
+        let tape = parser::parse(input, &Limits::default()).unwrap();
+        let mut strings = 0;
+        for node in tape.iter().filter(|n| matches!(n.tag, Tag::String | Tag::EscapedString)) {
+            let has_backslash = input[node.span()].contains(&b'\\');
+            assert_eq!(node.tag == Tag::EscapedString, has_backslash, "{:?}", String::from_utf8_lossy(input));
+            strings += 1;
+        }
+        assert!(strings > 0);
+    }
+
+    // One escape-heavy or plain string body at every alignment, three times per document.
+    for pad in 0..140 {
+        for body in [&br"\\"[..], br"x\n", br#"ab\""#, b"plain", concat!("\\", "u0041z").as_bytes()] {
+            let mut doc = vec![b' '; pad];
+            doc.push(b'[');
+            for extra in 0..3 {
+                doc.push(b'"');
+                doc.extend(std::iter::repeat_n(b'q', pad * extra % 70));
+                doc.extend_from_slice(body);
+                doc.extend_from_slice(b"\",");
+            }
+            doc.extend_from_slice(b"\"end\"]");
+            check(&doc);
+        }
+    }
+
+    // Random arrays of strings, some long enough to cross scanner chunks (4096 offsets).
+    let escaped_e = concat!("\\", "u00e9").as_bytes();
+    let pieces: [&[u8]; 8] = [b"a", br"\\", br#"\""#, br"\n", escaped_e, b" ", b"{,:]", "\u{fc}".as_bytes()];
+    let mut seed = 0x2545F4914F6CDD1Du64;
+    let mut rand = |n: usize| {
+        seed ^= seed << 13;
+        seed ^= seed >> 7;
+        seed ^= seed << 17;
+        (seed % n as u64) as usize
+    };
+    for round in 0..300 {
+        let count = if round % 30 == 0 { 3000 } else { 1 + rand(40) };
+        let mut doc = b"[".to_vec();
+        for i in 0..count {
+            if i > 0 {
+                doc.push(b',');
+            }
+            doc.push(b'"');
+            let max = if rand(4) == 0 { 1 } else { 30 };
+            for _ in 0..rand(max) {
+                doc.extend_from_slice(pieces[rand(pieces.len())]);
+            }
+            doc.push(b'"');
+        }
+        doc.push(b']');
+        check(&doc);
+    }
+}

@@ -9,7 +9,8 @@ use crate::{ErrorKind, JsonError};
 ///
 /// Everything else about strings is checked before stage 2 sees them: UTF-8 over
 /// the whole input ([`crate::parser`]) and control bytes by the scanner's masks.
-/// So plain strings cost one 8-bytes-at-a-time search for `\\`.
+/// Stage 2 only calls this for strings the scanner saw a backslash in, so plain
+/// strings cost nothing here.
 pub(crate) fn validate_escapes(content: &[u8], base: usize) -> Result<bool, JsonError> {
     let Some(mut i) = find_backslash(content, 0) else {
         return Ok(false);
