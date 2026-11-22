@@ -30,3 +30,31 @@ jobs:
       - name: Test Android modules and build the release AAR
         working-directory: android
         run: ./gradlew :yalin-android:testDebugUnitTest :sample-app:testDebugUnitTest :yalin-android:assembleRelease
+
+  apple:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install Rust and build the XCFramework
+        run: |
+          rustup toolchain install 1.100.0 --profile minimal
+          rustup override set 1.100.0
+          apple/build-xcframework.sh
+      - name: Test the Swift package on macOS
+        run: swift test
+      - name: Build the Swift package for iOS
+        run: |
+          xcodebuild build -scheme Yalin -destination 'generic/platform=iOS' -quiet
+          xcodebuild build -scheme Yalin -destination 'generic/platform=iOS Simulator' -quiet
+
+  swift-linux:
+    runs-on: ubuntu-24.04
+    container: swift:6.2-noble
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install Rust and build libyalin_ffi.a
+        run: |
+          curl -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain 1.100.0
+          "$HOME/.cargo/bin/cargo" build --locked --release -p yalin-ffi
+      - name: Test the Swift package
+        run: swift test

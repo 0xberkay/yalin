@@ -1,0 +1,16 @@
+[package]
+name = "yalin-ffi"
+description = "C ABI for Yalın (builds libyalin_ffi.a for the Swift package)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+name = "yalin_ffi"
+# staticlib: linked into the XCFramework (iOS/macOS) and the Linux Swift tests.
+# rlib: lets `cargo test` exercise the boundary without a C toolchain.
+crate-type = ["staticlib", "rlib"]
+
+[dependencies]
+yalin-core = { path = "../yalin-core" }
+yalin-wire = { path = "../yalin-wire" }

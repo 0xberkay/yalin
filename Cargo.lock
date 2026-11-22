@@ -653,10 +653,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "yalin-ffi"
+version = "0.0.2"
+dependencies = [
+ "yalin-core",
+ "yalin-wire",
+]
+
+[[package]]
 name = "yalin-jni"
 version = "0.0.2"
 dependencies = [
  "jni",
+ "yalin-core",
+ "yalin-wire",
+]
+
+[[package]]
+name = "yalin-wire"
+version = "0.0.2"
+dependencies = [
  "yalin-core",
 ]
 

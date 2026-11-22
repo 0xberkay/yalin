@@ -1,5 +1,6 @@
-//! Wire formats shared with the Kotlin side (`YalinNative.kt` / `YalinProjection.kt`).
-//! Keep both in sync. All integers are little-endian.
+//! Wire formats shared with the Kotlin side (`YalinNative.kt` / `YalinProjection.kt`)
+//! and the Swift side (`apple/Sources/Yalin/YalinProjection.swift`).
+//! Keep all sides in sync. All integers are little-endian.
 //!
 //! **Paths in** (`ByteArray`): repeated `[u32 len][len bytes UTF-8 path]`.
 //!
@@ -43,7 +44,7 @@ pub const OBJECT: u8 = 9;
 pub const INVALID_PATH: u8 = 10;
 pub const TYPE_MISMATCH: u8 = 11;
 
-/// Error for a malformed request from the Kotlin side (a bug, not bad JSON).
+/// Error for a malformed request from a binding (a bug, not bad JSON).
 #[derive(Debug)]
 pub struct ProtocolError(pub &'static str);
 

@@ -1,4 +1,5 @@
-//! Whole-tree wire format, decoded by `YalinTreeDecoder.kt`. Keep both in sync.
+//! Whole-tree wire format, decoded by `YalinTreeDecoder.kt` and
+//! `apple/Sources/Yalin/YalinTreeDecoder.swift`. Keep all three in sync.
 //! All integers are little-endian.
 //!
 //! `[i64 status]` then, if `status == 0`, `[u8 slot_bits]` and the root value

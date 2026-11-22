@@ -4,7 +4,7 @@
   <img src="docs/assets/yalin-mascot.png" alt="Yalın mascot, a Rust crab holding an Android robot" width="360">
 </p>
 
-**Fast, strict JSON for Android, powered by a SIMD Rust parser.**
+**Fast, strict JSON for Android, iOS and macOS, powered by a SIMD Rust parser.**
 
 Yalın reads UTF-8 JSON straight from a `ByteArray`. A native parser validates the input and indexes it, and your Kotlin or Java code asks for what it needs: a few fields in one call, or the whole tree as immutable Kotlin values.
 
@@ -68,6 +68,33 @@ val name = (user["name"] as YalinString).value
 An integer that fits in a `Long` becomes `YalinLong`, a number with a fraction or exponent becomes `YalinDouble`, and anything else becomes `YalinBigNumber`. `parseTree` also accepts a `String`.
 
 Typed getters return `null` for a missing field or a JSON `null`; use `kind` to tell them apart. Invalid JSON throws `YalinParseException`.
+
+## iOS and macOS (Swift)
+
+The Swift package uses the same Rust parser. On a Mac with Xcode and rustup, build the XCFramework:
+
+```sh
+apple/build-xcframework.sh
+```
+
+In Xcode, choose File › Add Package Dependencies › Add Local…, select this checkout, and link the `Yalin` product.
+
+```swift
+import Foundation
+import Yalin
+
+let data = Data(#"{"user":{"name":"Ada"},"items":[{"price":12.5}]}"#.utf8)
+let fields = try Yalin.project(data, "user.name", "items[0].price")
+let name = try fields.string(at: 0)
+
+let doc = try Yalin.parse(data)
+let price = try doc.double("items[0].price")
+
+let tree = try Yalin.parseTree(data)
+let first = tree["items"]?[0]?["price"]?.doubleValue
+```
+
+Requires iOS 13 or macOS 10.15. See [Swift guide](docs/apple.md) for errors, numbers, threading, performance notes and benchmarks.
 
 ## Use with AI agents
 
@@ -147,6 +174,8 @@ cargo test --workspace --locked
 cd android
 ./gradlew :yalin-android:testDebugUnitTest :yalin-android:assembleRelease
 ```
+
+For the Swift package, on macOS run `apple/build-xcframework.sh && swift test`. On Linux, run `cargo build --release -p yalin-ffi && swift test`.
 
 ## Android sample app
 

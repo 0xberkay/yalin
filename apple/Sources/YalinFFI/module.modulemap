@@ -1,0 +1,7 @@
+// Used on Linux, where the package links libyalin_ffi.a from target/release.
+// Apple platforms use the module map inside YalinFFI.xcframework instead.
+module YalinFFI {
+  header "yalin.h"
+  link "yalin_ffi"
+  export *
+}

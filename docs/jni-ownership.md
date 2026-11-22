@@ -44,5 +44,5 @@ Release builds keep `panic = "unwind"` so that panics can be caught at the bound
 ## Call granularity
 
 One JNI call per `project(...)`, whatever the number of paths. Results come back as a single
-`ByteArray` (format in `codec.rs`). Kotlin decodes it lazily, so a string is only created when
+`ByteArray` (format in `crates/yalin-wire/src/codec.rs`). Kotlin decodes it lazily, so a string is only created when
 it is read.

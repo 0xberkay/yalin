@@ -9,9 +9,10 @@
 //!   outcomes (bad JSON, missing fields, …) are encoded in return values
 //!   ([`codec`]), never thrown from native code.
 
-mod codec;
 mod registry;
-pub mod tree;
+
+/// Re-exported so existing users (`yalin-bench`) keep `yalin::tree`.
+pub use yalin_wire::tree;
 
 use jni::EnvUnowned;
 use jni::errors::ThrowRuntimeExAndDefault;
@@ -19,7 +20,7 @@ use jni::objects::{JByteArray, JByteBuffer, JClass};
 use jni::sys::{jint, jlong};
 use yalin_core::Document;
 
-use codec::ProtocolError;
+use yalin_wire::codec::{self, ProtocolError};
 
 #[derive(Debug)]
 enum BridgeError {

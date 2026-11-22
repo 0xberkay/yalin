@@ -8,3 +8,8 @@ local.properties
 
 replay_pid*.log
 hs_err_pid*.log
+
+# Swift package
+/.build/
+/.swiftpm/
+/apple/YalinFFI.xcframework/

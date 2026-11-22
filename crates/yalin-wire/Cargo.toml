@@ -1,0 +1,9 @@
+[package]
+name = "yalin-wire"
+description = "Binary result formats shared by the Yalın JNI (Android) and C (Apple) bindings"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+yalin-core = { path = "../yalin-core" }

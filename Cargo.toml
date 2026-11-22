@@ -1,14 +1,14 @@
 [workspace]
 resolver = "3"
-members = ["crates/yalin-core", "crates/yalin-jni", "crates/yalin-bench"]
+members = ["crates/yalin-core", "crates/yalin-wire", "crates/yalin-jni", "crates/yalin-ffi", "crates/yalin-bench"]
 
 [workspace.package]
 edition = "2024"
 version = "0.0.2"
 license = "Apache-2.0"
 
-# Shipping profile for libyalin.so. Keep panic = "unwind": the JNI layer
-# catches panics at the boundary instead of aborting the app.
+# Shipping profile for libyalin.so and libyalin_ffi.a. Keep panic = "unwind":
+# the JNI and C layers catch panics at the boundary instead of aborting the app.
 [profile.release]
 lto = true
 codegen-units = 1
