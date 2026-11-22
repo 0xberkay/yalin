@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yalın — fast, strict JSON for Android, iOS and macOS</title>
+<meta name="description" content="Yalın is a fast, strict JSON reader for Android, iOS and macOS. Read selected fields or build a full tree in Kotlin, Java or Swift with a SIMD Rust parser.">
+<meta name="theme-color" content="#0c0b0a">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:title" content="Yalın — fast, strict JSON for Android, iOS and macOS">
+<meta property="og:description" content="Read selected fields or build a full JSON tree in Kotlin, Java or Swift, powered by a SIMD Rust parser.">
+<meta property="og:image" content="https://yalin.zbd.com.tr/og.jpg?v=20261123">
+<meta property="og:url" content="https://yalin.zbd.com.tr/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css?v=20261123">
+<script>try{var t=localStorage.getItem("yalin-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <button class="menu-btn" aria-label="Open contents" aria-expanded="false" aria-controls="toc">
+      <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+    <a class="brand" href="#top">
+      <img src="/img/mark.png" alt="" width="28" height="28">
+      <span>Yalın</span>
+    </a>
+    <span class="ver">Android v0.0.2</span>
+    <nav class="bar-links">
+      <a href="#install">Install</a>
+      <a href="#benchmarks">Benchmarks</a>
+      <a href="#playground">Playground</a>
+      <a href="https://github.com/0xberkay/yalin" class="gh" rel="noopener">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span>GitHub</span>
+      </a>
+    </nav>
+    <button class="theme-btn" aria-label="Toggle colour theme">
+      <svg class="i-sun" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 1.8v2M10 16.2v2M1.8 10h2M16.2 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <svg class="i-moon" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M16.5 12.6A7 7 0 017.4 3.5a7 7 0 109.1 9.1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <div class="hero-copy">
+    <p class="lexeme"><b>yalın</b> <span>/jaˈɫɯn/</span> <i>Turkish, adj.</i> — plain, unadorned.</p>
+    <h1>Fast, strict JSON<br>for Android, iOS and macOS.</h1>
+    <p class="lede">Read a few fields in one call or build the full JSON tree in Kotlin, Java or Swift. The same SIMD Rust parser validates and indexes the input on each platform.</p>
+    <div class="install-line">
+      <code><span class="tk-fn">implementation</span>(<span class="tk-str">"io.github.0xberkay:yalin-android:0.0.2"</span>)</code>
+      <button class="copy" data-copy='implementation("io.github.0xberkay:yalin-android:0.0.2")' aria-label="Copy dependency">Copy</button>
+    </div>
+    <div class="hero-cta">
+      <a class="btn primary" href="#entry-points">Android guide</a>
+      <a class="btn" href="#swift">Swift guide</a>
+      <a class="btn" href="https://github.com/0xberkay/yalin" rel="noopener">Source on GitHub</a>
+    </div>
+    <ul class="facts">
+      <li><b>Android</b> API 24+</li>
+      <li><b>iOS</b> 13+</li>
+      <li><b>macOS</b> 10.15+</li>
+      <li><b>3</b> entry points</li>
+      <li><b>0</b> annotations, codegen or reflection</li>
+    </ul>
+  </div>
+  <figure class="hero-art">
+    <picture>
+      <source srcset="/img/mascot.webp?v=20261123" type="image/webp">
+      <img src="/img/mascot.jpg?v=20261123" alt="Yalın mascot, a Rust crab holding the Android robot and Apple logo" width="1200" height="800" fetchpriority="high">
+    </picture>
+  </figure>
+</section>
+
+<section class="proof" aria-labelledby="proof-h">
+  <div class="proof-head">
+    <h2 id="proof-h">Read 4 fields from a 1&nbsp;MB response</h2>
+    <p>Android median time on an Infinix X6833B (Helio G99), 23 Nov 2026, release build. Every library starts from the same <code>ByteArray</code> and validates the whole input.</p>
+    <p class="proof-link"><a href="#ios-benchmarks">See iOS simulator benchmarks</a></p>
+  </div>
+  <div class="chart" data-chart="project"></div>
+</section>
+
+<div class="docs">
+
+<aside class="toc" id="toc" aria-label="Contents">
+  <nav>
+    <p class="toc-h">Start</p>
+    <a href="#overview">Overview</a>
+    <a href="#install">Android installation</a>
+    <a href="#swift">iOS and macOS (Swift)</a>
+    <a href="#entry-points">Pick an entry point</a>
+    <p class="toc-h">Guide</p>
+    <a href="#project">project — a few fields</a>
+    <a href="#parse">parse — reusable document</a>
+    <a href="#tree">parseTree — full tree</a>
+    <a href="#paths">Paths</a>
+    <a href="#playground">Path playground</a>
+    <a href="#values">Values and types</a>
+    <a href="#null">Missing, null, wrong type</a>
+    <a href="#errors">Errors</a>
+    <a href="#java">From Java</a>
+    <a href="#lifecycle">Memory and threads</a>
+    <p class="toc-h">Internals</p>
+    <a href="#how">How it works</a>
+    <a href="#benchmarks">Android benchmarks</a>
+    <a href="#ios-benchmarks">iOS benchmarks</a>
+    <p class="toc-h">More</p>
+    <a href="#migrating">Migrating</a>
+    <a href="#agents">Use with AI agents</a>
+    <a href="#build">Build from source</a>
+  </nav>
+</aside>
+
+<article class="content">
+
+<section id="overview">
+  <p class="eyebrow">Start</p>
+  <h2>Overview</h2>
+  <p>Yalın reads UTF-8 JSON on Android, iOS and macOS. Read selected fields from a response or build an immutable tree and map its values to your own types.</p>
+  <dl class="why">
+    <div><dt>Fast field reads</dt><dd>Pull a few values out of a large response without building a tree for it. At 1&nbsp;MB, 2.7× faster than fastjson2 on Android and 7.1× faster than Foundation on the iOS simulator.</dd></div>
+    <div><dt>Android full trees from 16&nbsp;KB up</dt><dd>1.3× faster than fastjson2 and 2.7× faster than Gson at 1&nbsp;MB.</dd></div>
+    <div><dt>Fewer Android allocations</dt><dd>A full tree creates about half the objects fastjson2 does and a quarter of what Gson does.</dd></div>
+    <div><dt>Strict by default</dt><dd>Invalid UTF-8, bad escapes, trailing commas and control characters are rejected. Duplicate keys are rejected in trees.</dd></div>
+    <div><dt>Numeric types</dt><dd>Integers use <code>Long</code> on Android and <code>Int64</code> in Swift when they fit. Both preserve large numeric values.</dd></div>
+    <div><dt>Small surface</dt><dd>Three entry points across platforms. The Android AAR includes R8 rules.</dd></div>
+  </dl>
+</section>
+
+<section id="install">
+  <p class="eyebrow">Start</p>
+  <h2>Install on Android</h2>
+  <p>Yalın is on Maven Central.</p>
+  <pre data-lang="kotlin" data-title="app/build.gradle.kts"><code>dependencies {
+    implementation("io.github.0xberkay:yalin-android:0.0.2")
+}</code></pre>
+  <table class="spec">
+    <tbody>
+      <tr><th>minSdk</th><td>24 or higher</td></tr>
+      <tr><th>compileSdk</th><td>37 or higher</td></tr>
+      <tr><th>ABIs</th><td><code>arm64-v8a</code>, <code>x86_64</code></td></tr>
+      <tr><th>Shrinking</th><td>The AAR ships its own R8 rules</td></tr>
+    </tbody>
+  </table>
+  <div class="note">
+    <p class="note-h">32-bit devices</p>
+    <p>Native code ships for 64-bit ABIs only. If your app also targets <code>armeabi-v7a</code> or <code>x86</code>, Yalın throws <code>UnsatisfiedLinkError</code> on those devices. Restrict the ABIs, or keep another parser as a fallback.</p>
+  </div>
+  <pre data-lang="kotlin"><code>android {
+    defaultConfig {
+        ndk { abiFilters += listOf("arm64-v8a", "x86_64") }
+    }
+}</code></pre>
+</section>
+
+<section id="swift">
+  <p class="eyebrow">Start</p>
+  <h2>iOS and macOS with Swift</h2>
+  <p>The Swift package uses the same Rust parser through a native XCFramework. It supports iOS 13+, macOS 10.15+ and Swift 5.9+ (Xcode 15+), including arm64 iOS devices and arm64 or x86_64 iOS simulators and Macs.</p>
+  <h3>Install in Xcode</h3>
+  <p>Clone the repository and build the XCFramework on a Mac with Xcode and rustup. In Xcode, choose <b>File → Add Package Dependencies → Add Local…</b>, select the checkout and link the <code>Yalin</code> library.</p>
+  <pre data-lang="sh"><code>git clone https://github.com/0xberkay/yalin.git
+cd yalin
+apple/build-xcframework.sh</code></pre>
+  <h3>Read JSON in Swift</h3>
+  <p>Pass <code>Data</code>, a <code>String</code>, or another <code>ContiguousBytes</code> value. Every call validates the whole input. Use <code>project</code> to read selected fields, <code>parse</code> for repeated lookups, or <code>parseTree</code> for the whole tree.</p>
+  <pre data-lang="swift"><code>import Foundation
+import Yalin
+
+let data = Data(#"{"user":{"name":"Ada"},"items":[{"price":12.5}]}"#.utf8)
+let fields = try Yalin.project(data, "user.name", "items[0].price")
+let name = try fields.string(at: 0)    // "Ada"
+
+let document = try Yalin.parse(data)
+let price = try document.double("items[0].price")
+
+let tree = try Yalin.parseTree(data)
+let first = tree["items"]?[0]?["price"]?.doubleValue</code></pre>
+  <p>Swift releases the parsed document when its last reference goes away. Documents, projections and tree values are immutable and <code>Sendable</code>. Typed getters return <code>nil</code> for missing and null values. Use <code>kind</code> to distinguish them.</p>
+  <h3>Try the SwiftUI demo</h3>
+  <p>The demo includes a JSON playground and benchmarks for generated catalogs and the Vega Cars dataset. It compares Yalın, Foundation, IkigaJSON and ZippyJSON.</p>
+  <p><a href="https://github.com/0xberkay/yalin/blob/main/docs/apple.md#run-the-ios-demo">Run the iOS demo</a> · <a href="https://github.com/0xberkay/yalin/blob/main/docs/apple.md">Read the Swift documentation</a></p>
+</section>
+
+<section id="entry-points">
+  <p class="eyebrow">Start</p>
+  <h2>Pick an entry point</h2>
+  <p>Everything lives on <code>dev.yalin.YalinJson</code>. Prefer a <code>ByteArray</code> input, such as OkHttp's <code>response.body.bytes()</code>: a <code>String</code> has to be encoded to UTF-8 first, which costs 13–21%.</p>
+  <div class="paths3">
+    <a href="#project">
+      <span class="k">YalinJson.project(bytes, …paths)</span>
+      <b>A few fields, once</b>
+      <span>One native call, any number of paths. Returns a <code>YalinProjection</code> indexed by path order.</span>
+    </a>
+    <a href="#parse">
+      <span class="k">YalinJson.parse(bytes)</span>
+      <b>Many lookups, same input</b>
+      <span>Parse once, query many times. Returns a <code>YalinDocument</code> that you must close.</span>
+    </a>
+    <a href="#tree">
+      <span class="k">YalinJson.parseTree(bytes)</span>
+      <b>The whole document</b>
+      <span>Builds an immutable <code>YalinValue</code> tree of Kotlin maps and lists.</span>
+    </a>
+  </div>
+  <p class="rule"><b>Rule of thumb.</b> If the code reads a handful of fields from a big response, use <code>project</code>: it is several times faster than any tree. Use <code>parseTree</code> when the code walks most of the data.</p>
+</section>
+
+<section id="project">
+  <p class="eyebrow">Guide</p>
+  <h2><code>project</code> — a few fields in one call</h2>
+  <p>The input is parsed, validated and queried in a single JNI call. No document is kept, so there is nothing to close. Results come back as one compact buffer and are decoded lazily: a string is only created when you read it.</p>
+  <pre data-lang="kotlin"><code>import dev.yalin.YalinJson
+
+val input = """{"user":{"name":"Ada"},"items":[{"price":12.5}]}""".encodeToByteArray()
+
+val fields = YalinJson.project(input, "user.name", "items[0].price")
+val name = fields.getString(0)    // "Ada"
+val price = fields.getDouble(1)   // 12.5</code></pre>
+  <p><code>YalinProjection</code> has <code>getString</code>, <code>getLong</code>, <code>getDouble</code>, <code>getBoolean</code> and <code>kind</code>, each taking the index of the path you asked for, plus <code>size</code>.</p>
+</section>
+
+<section id="parse">
+  <p class="eyebrow">Guide</p>
+  <h2><code>parse</code> — a reusable document</h2>
+  <p>When you look up many things in the same input, parse it once. The document lives in native memory until you close it, so always use <code>use {}</code> or <code>try/finally</code>.</p>
+  <pre data-lang="kotlin"><code>YalinJson.parse(bytes).use { doc ->
+    val count = doc.getLong("meta.total") ?: 0
+    val page = doc.project("items[0].id", "items[1].id")
+}</code></pre>
+  <p><code>parse</code> also accepts a <code>ByteBuffer</code>. Only the bytes between <code>position</code> and <code>limit</code> are read and the position does not change. A direct buffer is copied natively with no intermediate array; don't modify it during the call.</p>
+</section>
+
+<section id="tree">
+  <p class="eyebrow">Guide</p>
+  <h2><code>parseTree</code> — the whole tree</h2>
+  <p><code>YalinObject</code> is a <code>Map&lt;String, YalinValue&gt;</code> with keys in document order, and <code>YalinArray</code> is a <code>List&lt;YalinValue&gt;</code>, so the standard collection functions work.</p>
+  <pre data-lang="kotlin"><code>import dev.yalin.*
+
+val root = YalinJson.parseTree(bytes) as YalinObject
+val items = root["items"] as YalinArray
+val names = items.map { ((it as YalinObject)["name"] as YalinString).value }</code></pre>
+  <p><code>parseTree</code> also accepts a <code>String</code>; error offsets are still UTF-8 byte offsets. It is stricter than <code>parse</code>: a repeated object key throws <code>YalinParseException</code> with <code>DUPLICATE_KEY</code>.</p>
+</section>
+
+<section id="paths">
+  <p class="eyebrow">Guide</p>
+  <h2>Paths</h2>
+  <p>A path is a list of segments evaluated from the root. Keys are matched after unescaping, so <code>"a"</code> in the document matches the path <code>a</code>.</p>
+  <table class="grid">
+    <thead><tr><th>Path</th><th>Selects</th></tr></thead>
+    <tbody>
+      <tr><td><code>user.name</code></td><td>Member <code>name</code> of member <code>user</code></td></tr>
+      <tr><td><code>items[3].price</code></td><td>Zero-based array index, then a member</td></tr>
+      <tr><td><code>[0].id</code></td><td>Index into a top-level array</td></tr>
+      <tr><td><code>matrix[1][2]</code></td><td>Nested arrays</td></tr>
+      <tr><td><code>""</code></td><td>The root value itself</td></tr>
+    </tbody>
+  </table>
+  <ul class="plain">
+    <li>Indices are decimal without leading zeros: <code>[07]</code> is a malformed path.</li>
+    <li>A key containing <code>.</code>, <code>[</code> or <code>]</code>, or an empty key, cannot be addressed. Use <code>parseTree</code> for those.</li>
+    <li>With a duplicate key, paths return the <em>first</em> occurrence. <code>parseTree</code> rejects duplicates.</li>
+  </ul>
+</section>
+
+<section id="playground">
+  <p class="eyebrow">Guide</p>
+  <h2>Path playground</h2>
+  <p>Try paths against your own JSON and see what each getter would do. This runs in your browser with a small JavaScript model of Yalın's path rules, not the native parser.</p>
+  <div class="pg">
+    <div class="pg-in">
+      <label for="pg-json">Input</label>
+      <textarea id="pg-json" spellcheck="false" wrap="off" rows="11">{
+  "meta": { "total": 3, "next": null },
+  "items": [
+    { "name": "Kettle", "price": 24.9 },
+    { "name": "Lamp", "price": 12.5, "seller": { "name": "Ada" } },
+    { "name": "Desk", "price": 189 }
+  ]
+}</textarea>
+      <label for="pg-paths">Paths, one per line</label>
+      <textarea id="pg-paths" spellcheck="false" wrap="off" rows="6">meta.total
+meta.next
+items[1].seller.name
+items[0].seller.name
+items.name
+items[07]</textarea>
+    </div>
+    <div class="pg-out" aria-live="polite">
+      <p class="pg-call"></p>
+      <ol class="pg-res"></ol>
+    </div>
+  </div>
+</section>
+
+<section id="values">
+  <p class="eyebrow">Guide</p>
+  <h2>Values and types</h2>
+  <p><code>YalinValue</code> is a sealed interface, so a <code>when</code> over it is exhaustive.</p>
+  <table class="grid">
+    <thead><tr><th>JSON</th><th>Type</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td><code>null</code></td><td><code>YalinNull</code></td><td>object</td></tr>
+      <tr><td><code>true</code> / <code>false</code></td><td><code>YalinBoolean</code></td><td><code>Boolean</code></td></tr>
+      <tr><td>string</td><td><code>YalinString</code></td><td><code>String</code></td></tr>
+      <tr><td>integer that fits a <code>Long</code></td><td><code>YalinLong</code></td><td><code>Long</code></td></tr>
+      <tr><td>number with <code>.</code>, <code>e</code> or <code>E</code> that fits a <code>Double</code></td><td><code>YalinDouble</code></td><td><code>Double</code></td></tr>
+      <tr><td>larger integer, or a number that overflows <code>Double</code></td><td><code>YalinBigNumber</code></td><td><code>BigDecimal</code></td></tr>
+      <tr><td>array</td><td><code>YalinArray</code></td><td><code>List&lt;YalinValue&gt;</code></td></tr>
+      <tr><td>object</td><td><code>YalinObject</code></td><td><code>Map&lt;String, YalinValue&gt;</code></td></tr>
+    </tbody>
+  </table>
+  <pre data-lang="kotlin"><code>fun describe(v: YalinValue): String = when (v) {
+    is YalinString -> "string ${v.value}"
+    is YalinLong -> "integer ${v.value}"
+    is YalinDouble -> "double ${v.value}"
+    is YalinBigNumber -> "big ${v.value}"
+    is YalinBoolean -> "bool ${v.value}"
+    is YalinArray -> "array of ${v.size}"
+    is YalinObject -> "object with ${v.size} keys"
+    YalinNull -> "null"
+}</code></pre>
+</section>
+
+<section id="null">
+  <p class="eyebrow">Guide</p>
+  <h2>Missing, null and wrong types</h2>
+  <p>Typed getters return <code>null</code> both for a path that selects nothing and for a JSON <code>null</code>. When the difference matters, ask for the kind.</p>
+  <pre data-lang="kotlin"><code>when (fields.kind(0)) {
+    YalinKind.MISSING -> { /* no such key or index */ }
+    YalinKind.NULL -> { /* present, and null */ }
+    else -> use(fields.getString(0))
+}</code></pre>
+  <table class="grid">
+    <thead><tr><th>Situation</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td>Missing path or JSON <code>null</code></td><td><code>null</code></td></tr>
+      <tr><td>Value of another type, including indexing an object or reading a member of an array on the way</td><td><code>YalinTypeException(path, expected, found)</code></td></tr>
+      <tr><td><code>getLong</code> on a fractional or out-of-range number</td><td><code>ArithmeticException</code></td></tr>
+      <tr><td><code>getDouble</code> on a number that overflows <code>Double</code> (integers are fine)</td><td><code>ArithmeticException</code></td></tr>
+      <tr><td>Malformed path</td><td><code>YalinPathException(path, position)</code></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="errors">
+  <p class="eyebrow">Guide</p>
+  <h2>Errors</h2>
+  <p>Yalın follows RFC 8259 strictly. Invalid input throws <code>YalinParseException</code> with an <code>error</code> and the UTF-8 byte <code>offset</code> where it was found. Nothing is thrown from native code; the error is decoded on the Kotlin side.</p>
+  <pre data-lang="kotlin"><code>try {
+    YalinJson.project(bytes, "id")
+} catch (e: YalinParseException) {
+    log("bad JSON: ${e.error} at byte ${e.offset}")
+}</code></pre>
+  <p>Input that Gson or fastjson2 accepted leniently may fail here. That is expected: fix the producer, or catch the exception.</p>
+  <div class="errs">
+    <div>
+      <p class="errs-h">Rejected</p>
+      <ul>
+        <li>Trailing commas</li><li>Comments</li><li>Single quotes</li><li>Unquoted keys</li><li><code>NaN</code> and other bare words</li><li>Invalid UTF-8</li><li>Control characters in strings</li><li>Bad escapes and lone surrogates</li><li>Leading zeros, <code>1.</code>, <code>1e</code></li><li>Data after the root value</li>
+      </ul>
+    </div>
+    <div>
+      <p class="errs-h"><code>YalinParseError</code></p>
+      <ul class="mono">
+        <li>INPUT_TOO_LARGE</li><li>UNEXPECTED_EOF</li><li>UNEXPECTED_CHARACTER</li><li>UNTERMINATED_STRING</li><li>CONTROL_CHARACTER_IN_STRING</li><li>INVALID_ESCAPE</li><li>INVALID_SURROGATE</li><li>INVALID_UTF8</li><li>INVALID_LITERAL</li><li>INVALID_NUMBER</li><li>DEPTH_LIMIT_EXCEEDED</li><li>TRAILING_CHARACTERS</li><li>DUPLICATE_KEY <span>parseTree only</span></li>
+      </ul>
+    </div>
+  </div>
+  <p class="small">Nesting is limited to 1024 levels and input to 4&nbsp;GiB. A Rust panic or JNI failure surfaces as a plain <code>RuntimeException</code>.</p>
+</section>
+
+<section id="java">
+  <p class="eyebrow">Guide</p>
+  <h2>From Java</h2>
+  <p>All entry points are <code>@JvmStatic</code>, and <code>YalinDocument</code> is <code>Closeable</code>, so try-with-resources works.</p>
+  <pre data-lang="java"><code>YalinProjection fields = YalinJson.project(bytes, "user.name", "items[0].price");
+String name = fields.getString(0);
+Double price = fields.getDouble(1);
+
+try (YalinDocument doc = YalinJson.parse(bytes)) {
+    Long total = doc.getLong("meta.total");
+}</code></pre>
+</section>
+
+<section id="lifecycle">
+  <p class="eyebrow">Guide</p>
+  <h2>Memory and threads</h2>
+  <ul class="plain">
+    <li><b>Your bytes are copied.</b> Input is copied into Rust-owned memory during the call, and no pointer into a Java array survives it. You can reuse or change the array as soon as the call returns.</li>
+    <li><b>Documents must be closed.</b> There is no finalizer or <code>Cleaner</code> yet (it needs API 33), so an unclosed <code>YalinDocument</code> is never freed by the GC. <code>close()</code> is idempotent.</li>
+    <li><b>Queries are thread-safe.</b> Several threads may query one document, and <code>close()</code> may race them safely: the memory is freed after the last query in flight. A query after <code>close()</code> throws <code>IllegalStateException</code>.</li>
+    <li><b>Handles, not pointers.</b> Kotlin holds an opaque generation-tagged <code>Long</code>. A stale or forged handle resolves to nothing, and reusing a slot never revives an old handle.</li>
+  </ul>
+</section>
+
+<section id="how">
+  <p class="eyebrow">Internals</p>
+  <h2>How it works</h2>
+  <p>Each call crosses JNI exactly once, whatever the number of paths.</p>
+  <ol class="pipe">
+    <li><span class="pipe-n">01</span><b>Your app</b><span>Kotlin or Java hands over a <code>ByteArray</code>, <code>ByteBuffer</code> or <code>String</code>.</span></li>
+    <li><span class="pipe-n">02</span><b>One JNI call</b><span><code>project</code>, <code>parse</code> or <code>parseTree</code> copies the input into native memory.</span></li>
+    <li><span class="pipe-n">03</span><b>UTF-8 check</b><span>The whole input is validated with NEON before anything else.</span></li>
+    <li><span class="pipe-n">04</span><b>Structural scan</b><span>Quotes, braces, colons and commas are found 64 bytes at a time with NEON or SSE2.</span></li>
+    <li><span class="pipe-n">05</span><b>Tape</b><span>The grammar is validated and the document recorded on a compact tape.</span></li>
+    <li><span class="pipe-n">06</span><b>Answer</b><span>Path queries read the tape directly. Trees go back in a compact binary form; repeated keys and short strings are reused across trees.</span></li>
+  </ol>
+</section>
+
+<section id="benchmarks">
+  <p class="eyebrow">Internals</p>
+  <h2>Android benchmarks</h2>
+  <p>AndroidX Microbenchmark, release build, on an Infinix X6833B (Helio G99, Android 13). Gson, Moshi, kotlinx.serialization, Jackson, fastjson2 and <code>org.json</code> were tested. An equivalence test checks that every library returns the same result before anything is timed.</p>
+  <div class="tabs" role="tablist" aria-label="Benchmark">
+    <button role="tab" aria-selected="true" data-tab="tree">Full tree</button>
+    <button role="tab" aria-selected="false" data-tab="alloc">Allocations</button>
+    <button role="tab" aria-selected="false" data-tab="project">Read 4 fields</button>
+  </div>
+  <p class="small chart-cap">1&nbsp;MB input · median of a release run · lower is better</p>
+  <div class="chart" data-chart="tree" id="bench-chart"></div>
+  <p class="small">Four-field results are from 23 Nov 2026. In the partial full-tree rerun that day, Yalın took 16.00&nbsp;ms and allocated 75,455 objects at 1&nbsp;MB. The full-tree and allocation charts compare the complete 20 Nov 2026 run.</p>
+  <h3>Against the fastest other library</h3>
+  <p>fastjson2 was the fastest competitor at every size.</p>
+  <table class="grid num">
+    <thead><tr><th>Input</th><th>Read 4 fields</th><th>Full tree</th></tr></thead>
+    <tbody>
+      <tr><td>1 KB</td><td><b>2.5×</b> faster</td><td class="dim">6% slower</td></tr>
+      <tr><td>16 KB</td><td><b>2.9×</b> faster</td><td><b>1.3×</b> faster</td></tr>
+      <tr><td>256 KB</td><td><b>2.8×</b> faster</td><td><b>1.4×</b> faster</td></tr>
+      <tr><td>1 MB</td><td><b>2.7×</b> faster</td><td><b>1.3×</b> faster</td></tr>
+    </tbody>
+  </table>
+  <details class="method">
+    <summary>Method and caveats</summary>
+    <ul class="plain">
+      <li>The field-read workload is a deterministic product list. Every scenario returns the same four values: <code>meta.total</code>, <code>items[0].name</code>, <code>items[mid].price</code> and <code>items[last].seller.name</code>.</li>
+      <li>In the full-tree benchmark every library builds and returns its whole tree, and all trees are mapped to the same plain form and compared.</li>
+      <li>Gson, fastjson2 and <code>org.json</code> parse leniently by default; Moshi, kotlinx.serialization, Jackson and Yalın are strict.</li>
+      <li>kotlinx and <code>org.json</code> include the <code>ByteArray</code> → <code>String</code> decode, which is their usual input.</li>
+      <li>Clocks were not locked. Library versions: Gson 2.15.0, Moshi 1.15.2, kotlinx.serialization 1.13.0, Jackson 2.23.0, fastjson2 2.0.66.android8.</li>
+      <li>Full tables, an Exynos 7904 phone and the parser-only Rust numbers are in the repository's <a href="https://github.com/0xberkay/yalin/blob/main/docs/benchmarks.md">Android benchmarks</a> and <a href="https://github.com/0xberkay/yalin/blob/main/docs/core-benchmarks.md">Rust benchmarks</a>.</li>
+    </ul>
+  </details>
+  <figure class="lab">
+    <img src="/img/parse-lab.webp" alt="Sample app comparing five JSON parsers on the 1 MB benchmark catalog" width="386" height="788" loading="lazy">
+    <figcaption>The <a href="https://github.com/0xberkay/yalin/tree/main/android/sample-app">sample app</a> compares full-tree parse times on your own device, using the benchmark catalogs and the Vega Cars dataset.</figcaption>
+  </figure>
+</section>
+
+<section id="ios-benchmarks">
+  <p class="eyebrow">Internals</p>
+  <h2>iOS simulator benchmarks</h2>
+  <p>Measured on 23 Nov 2026 using an iPhone 17 Pro simulator running iOS 26.2 on an Apple M3 Mac. Times are medians across three optimized runs. Each scenario was warmed up and sampled for at least 0.5 seconds per run.</p>
+  <h3>Read four fields from 1 MB</h3>
+  <p>Yalın <code>project</code> reads selected fields directly. <code>JSONSerialization</code> builds the tree, then reads the same four fields. Both start from the same UTF-8 <code>Data</code>, and the benchmark checks that the values match.</p>
+  <div class="chart" data-chart="ios-project"></div>
+  <h3>Build the full tree from 1 MB</h3>
+  <div class="chart" data-chart="ios-tree"></div>
+  <div class="benchmark-scroll" role="region" aria-label="iOS benchmark timings by input size" tabindex="0">
+    <table class="grid num">
+      <thead><tr><th scope="col">Scenario</th><th scope="col">1 KB</th><th scope="col">16 KB</th><th scope="col">256 KB</th><th scope="col">1 MB</th></tr></thead>
+      <tbody>
+        <tr><td>Yalın <code>project</code></td><td>3.7 µs</td><td>36.0 µs</td><td>560.8 µs</td><td>2.23 ms</td></tr>
+        <tr><td>Foundation tree + 4 fields</td><td>25.5 µs</td><td>260.8 µs</td><td>3.92 ms</td><td>15.74 ms</td></tr>
+        <tr><td>Yalın <code>parseTree</code></td><td>11.4 µs</td><td>141.7 µs</td><td>2.34 ms</td><td>9.26 ms</td></tr>
+        <tr><td>Foundation tree</td><td>18.2 µs</td><td>250.0 µs</td><td>3.84 ms</td><td>15.54 ms</td></tr>
+        <tr><td><code>JSONDecoder</code> typed model</td><td>44.6 µs</td><td>597.9 µs</td><td>9.19 ms</td><td>36.60 ms</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><a href="https://github.com/0xberkay/yalin/blob/main/docs/apple.md#benchmarks">Swift benchmark documentation</a></p>
+</section>
+
+<section id="migrating">
+  <p class="eyebrow">More</p>
+  <h2>Migrating from another parser</h2>
+  <ol class="steps">
+    <li>Find where JSON is read and which fields the code actually uses.</li>
+    <li>If only some fields are used, replace the model or tree parse with one <code>project</code> call that lists those paths, and build your object from the getters.</li>
+    <li>If the whole structure is used, call <code>parseTree</code> and convert <code>YalinObject</code> and <code>YalinArray</code> to your types with small mapping functions.</li>
+    <li>Keep the old library for writing JSON. Yalın has no serializer.</li>
+    <li>Add a test with a real payload that compares the old and new results.</li>
+  </ol>
+  <pre data-lang="kotlin" data-title="Before → after"><code>// Gson: builds a full model to read three values
+val page = gson.fromJson(body, Page::class.java)
+
+// Yalın: one call, three paths
+val f = YalinJson.project(bytes, "meta.total", "items[0].id", "items[0].title")
+val page = Page(total = f.getLong(0) ?: 0, firstId = f.getLong(1), firstTitle = f.getString(2))</code></pre>
+</section>
+
+<section id="agents">
+  <p class="eyebrow">More</p>
+  <h2>Use with AI agents</h2>
+  <p>Yalın ships an <a href="https://github.com/0xberkay/yalin/blob/main/docs/skills/yalin/SKILL.md">agent skill</a> that teaches coding agents how to add the library, choose between <code>project</code>, <code>parse</code> and <code>parseTree</code>, and handle its errors.</p>
+  <h3>Claude Code</h3>
+  <p>Clone the repository and install the plugin from its local marketplace.</p>
+  <pre data-lang="sh"><code>git clone https://github.com/0xberkay/yalin.git
+cd yalin
+claude plugin marketplace add ./docs
+claude plugin install yalin@yalin</code></pre>
+  <h3>Codex and OpenCode</h3>
+  <p>Both read skills from <code>~/.agents/skills</code>, so one command sets up both.</p>
+  <pre data-lang="sh"><code>mkdir -p ~/.agents/skills/yalin && curl -fsSL -o ~/.agents/skills/yalin/SKILL.md \
+  https://raw.githubusercontent.com/0xberkay/yalin/main/docs/skills/yalin/SKILL.md</code></pre>
+  <p>To share it with your team, commit it to <code>.agents/skills/yalin/</code> in your repository instead. Older Codex versions read only <code>~/.codex/skills</code>, and OpenCode also reads <code>~/.config/opencode/skills</code>.</p>
+  <h3>Other agents</h3>
+  <p>Copy <code>SKILL.md</code> into the agent's skills folder as <code>yalin/SKILL.md</code>, or add it to the agent's instructions file.</p>
+</section>
+
+<section id="build">
+  <p class="eyebrow">More</p>
+  <h2>Build from source</h2>
+  <p>You need a Rust toolchain with the Android targets, JDK 21 to run Gradle, JDK 17 as the Kotlin toolchain, Android SDK Platform 37 and NDK <code>28.2.13676358</code>.</p>
+  <pre data-lang="sh"><code>rustup target add aarch64-linux-android x86_64-linux-android
+cargo test --workspace --locked
+cd android
+./gradlew :yalin-android:testDebugUnitTest :yalin-android:assembleRelease</code></pre>
+  <p>To try an unreleased build in another project, publish it to your local Maven repository with <code>./gradlew :yalin-android:publishToMavenLocal</code> and add <code>mavenLocal()</code> to the consumer's repositories.</p>
+</section>
+
+</article>
+</div>
+
+</main>
+
+<footer class="foot">
+  <pre class="crab" aria-hidden="true">       _     _
+      (o)   (o)
+  .-.(  \___/  ).-.
+ /   /  _   _  \   \
+ \  (  (     )  )  /
+  `-'\  `---'  /`-'
+      `-------'</pre>
+  <div>
+    <p><b>Enjoying Yalın?</b> <a href="https://github.com/0xberkay/yalin">Give it a star on GitHub.</a></p>
+    <p class="small">Apache License 2.0 · Made by <a href="https://github.com/0xberkay">0xberkay</a></p>
+  </div>
+</footer>
+
+<script src="/app.js?v=20261123" defer></script>
+</body>
+</html>

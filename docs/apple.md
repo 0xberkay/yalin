@@ -60,6 +60,31 @@ Inputs are any `ContiguousBytes` (`Data`, `[UInt8]`, …) or a `String`. Every c
 
 ## Benchmarks
 
+### iOS simulator
+
+Measured on 2026-11-23 with the iPhone 17 Pro simulator (iOS 26.2) on an Apple M3
+Mac. The Swift benchmark and library were built with `-O` and linked to the
+release Rust library. The table reports the median of three runs. In each run,
+every scenario is warmed up and sampled for at least 0.5 seconds.
+
+Each scenario starts from the same UTF-8 `Data`. The projection paths read
+`meta.total`, `items[0].name`, `items[mid].price` and `items[last].seller.name`.
+The benchmark checks that Yalın and Foundation return the same four values
+before timing. The Foundation tree uses `JSONSerialization.jsonObject(with:)`.
+The `JSONDecoder` column measures decoding into a typed model.
+
+| Input | Yalın `project` | Foundation tree + 4 fields | Yalın `parseTree` | Foundation tree | `JSONDecoder` model |
+|---|---:|---:|---:|---:|---:|
+| 1 KB | 3.7 µs | 25.5 µs | 11.4 µs | 18.2 µs | 44.6 µs |
+| 16 KB | 36.0 µs | 260.8 µs | 141.7 µs | 250.0 µs | 597.9 µs |
+| 256 KB | 560.8 µs | 3.92 ms | 2.34 ms | 3.84 ms | 9.19 ms |
+| 1 MB | 2.23 ms | 15.74 ms | 9.26 ms | 15.54 ms | 36.60 ms |
+
+The [benchmark source](../apple/Benchmarks/YalinBenchmark/main.swift) also runs
+on macOS with `swift run -c release yalin-benchmark` after building the XCFramework.
+
+### Linux reference
+
 `swift run -c release yalin-benchmark` times the Android benchmark's product catalog against `JSONSerialization` and `JSONDecoder`. On a Linux x86_64 container (Swift 6.2, swift-corelibs-foundation), medians:
 
 | Input | `project`, 4 fields | `parseTree` | `JSONSerialization` | `JSONDecoder` |
@@ -69,7 +94,7 @@ Inputs are any `ContiguousBytes` (`Data`, `[UInt8]`, …) or a `String`. Every c
 | 256 KB | 0.535 ms | 2.24 ms | 12.06 ms | 15.54 ms |
 | 1 MB | 2.31 ms | 8.51 ms | 69.05 ms | 58.89 ms |
 
-Apple's Foundation is faster than the Linux one, so expect smaller ratios on iOS. Device numbers have not been measured yet; to get them, run the same code from a Release build of an app on an iPhone.
+The Linux table records the earlier benchmark before the matching Foundation projection was added.
 
 ## Run the iOS demo
 

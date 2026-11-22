@@ -1,5 +1,4 @@
-// Compares Yalın with Foundation on the product catalog of
-// android/shared-benchmark (same payloads and paths as the Android benchmark).
+// Compares Yalın with Foundation on generated product catalogs.
 //
 //   swift run -c release yalin-benchmark
 //
@@ -49,24 +48,66 @@ struct Catalog: Decodable {
   let items: [Item]
 }
 
+struct CatalogFields: Equatable {
+  let total: Int64
+  let firstName: String
+  let middlePrice: Double
+  let lastSeller: String
+
+  var checksum: Int {
+    Int(total) &+ firstName.utf8.count &+ Int(middlePrice) &+ lastSeller.utf8.count
+  }
+}
+
+func yalinFields(_ data: Data, paths: [String]) throws -> CatalogFields {
+  let fields = try Yalin.project(data, paths: paths)
+  return try CatalogFields(
+    total: fields.int64(at: 0)!,
+    firstName: fields.string(at: 1)!,
+    middlePrice: fields.double(at: 2)!,
+    lastSeller: fields.string(at: 3)!
+  )
+}
+
+func foundationTree(_ data: Data) throws -> [String: Any] {
+  try JSONSerialization.jsonObject(with: data) as! [String: Any]
+}
+
+func foundationFields(_ data: Data, itemCount: Int) throws -> CatalogFields {
+  let tree = try foundationTree(data)
+  let meta = tree["meta"] as! [String: Any]
+  let items = tree["items"] as! [Any]
+  let first = items[0] as! [String: Any]
+  let middle = items[itemCount / 2] as! [String: Any]
+  let last = items[itemCount - 1] as! [String: Any]
+  let seller = last["seller"] as! [String: Any]
+  return CatalogFields(
+    total: (meta["total"] as! NSNumber).int64Value,
+    firstName: first["name"] as! String,
+    middlePrice: (middle["price"] as! NSNumber).doubleValue,
+    lastSeller: seller["name"] as! String
+  )
+}
+
 var sink = 0
 for (label, size) in [("1 KB", 1_024), ("16 KB", 16_384), ("256 KB", 262_144), ("1 MB", 1_048_576)] {
   let (data, count) = payload(targetBytes: size)
   let paths = ["meta.total", "items[0].name", "items[\(count / 2)].price", "items[\(count - 1)].seller.name"]
   print("\(label) (\(data.count) bytes, \(count) items)")
+  let projected = try yalinFields(data, paths: paths)
+  let foundation = try foundationFields(data, itemCount: count)
+  precondition(projected == foundation, "Projection differs for \(label)")
+
   let rows: [(String, () throws -> Void)] = [
-    ("Yalin.project, 4 fields", {
-      let r = try Yalin.project(data, paths: paths)
-      sink &+= Int(try r.int64(at: 0)!) &+ (try r.string(at: 3)!.utf8.count)
-    }),
+    ("Yalin.project, 4 fields", { sink &+= try yalinFields(data, paths: paths).checksum }),
+    ("JSONSerialization, 4 fields", { sink &+= try foundationFields(data, itemCount: count).checksum }),
     ("Yalin.parseTree", { if case let .object(o) = try Yalin.parseTree(data) { sink &+= o.count } }),
-    ("JSONSerialization", {
-      sink &+= (try JSONSerialization.jsonObject(with: data) as! [String: Any]).count
-    }),
+    ("JSONSerialization", { sink &+= try foundationTree(data).count }),
     ("JSONDecoder (Codable)", { sink &+= try JSONDecoder().decode(Catalog.self, from: data).items.count }),
   ]
+  for (_, body) in rows { try body() }
   for (name, body) in rows {
-    print("  \(name.padding(toLength: 26, withPad: " ", startingAt: 0)) \(String(format: "%9.3f", try measure(body))) ms")
+    print("  \(name.padding(toLength: 30, withPad: " ", startingAt: 0)) \(String(format: "%10.4f", try measure(body))) ms")
   }
 }
 print("(checksum \(sink))")

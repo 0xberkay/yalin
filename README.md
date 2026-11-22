@@ -126,6 +126,8 @@ To share the skill with your team, put it in the project instead: use `.agents/s
 
 ## Benchmarks
 
+### Android
+
 Every library starts from the same UTF-8 `ByteArray` and validates the whole input. A test checks that all of them return the same result before anything is timed.
 
 <p align="center">
@@ -146,6 +148,19 @@ Yalın against the fastest other tree API at each size:
 | 1 MB | **2.7×** faster | **1.3×** faster |
 
 Measured with AndroidX Microbenchmark on an Infinix X6833B (Helio G99, Android 13), release build. The full-tree charts use the complete 2026-11-20 run. The 2026-11-23 full-tree rerun ended early after an ADB disconnect. The full numbers, an Exynos 7904 phone and the parser-only results are in [Android benchmarks](docs/benchmarks.md) and [Rust benchmarks](docs/core-benchmarks.md).
+
+### iOS
+
+Measured on an iPhone 17 Pro simulator running iOS 26.2 on an Apple M3 Mac.
+See the [Swift benchmark results](docs/apple.md#ios-simulator) for all input sizes and the test setup.
+
+<p align="center">
+  <img src="docs/assets/bench-ios-project.svg" alt="Read 4 fields from a 1 MB JSON: Yalın project 2.23 ms, JSONSerialization 15.74 ms" width="760">
+</p>
+
+<p align="center">
+  <img src="docs/assets/bench-ios-tree.svg" alt="Build the full tree of a 1 MB JSON: Yalın parseTree 9.26 ms, JSONSerialization 15.54 ms" width="760">
+</p>
 
 ## How it works
 
