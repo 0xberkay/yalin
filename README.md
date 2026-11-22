@@ -1,7 +1,7 @@
 # Yalın
 
 <p align="center">
-  <img src="docs/assets/yalin-mascot.png" alt="Yalın mascot, a Rust crab holding an Android robot" width="360">
+  <img src="docs/assets/yalin-mascot.png" alt="Yalın mascot, a Rust crab holding the Android robot and Apple logo" width="360">
 </p>
 
 **Fast, strict JSON for Android, iOS and macOS, powered by a SIMD Rust parser.**
@@ -9,7 +9,7 @@
 Yalın reads UTF-8 JSON straight from a `ByteArray`. A native parser validates the input and indexes it, and your Kotlin or Java code asks for what it needs: a few fields in one call, or the whole tree as immutable Kotlin values.
 
 <p align="center">
-  <img src="docs/assets/bench-project.svg" alt="Reading 4 fields from a 1 MB JSON: Yalın 6.47 ms, fastjson2 22.07 ms, Jackson 39.02 ms, org.json 43.42 ms, Gson 44.74 ms, kotlinx 53.77 ms, Moshi 66.5 ms" width="760">
+  <img src="docs/assets/bench-project.svg" alt="Reading 4 fields from a 1 MB JSON: Yalın 7.29 ms, fastjson2 19.98 ms, Jackson 38.56 ms, org.json 41.78 ms, Gson 44.90 ms, kotlinx 50.20 ms, Moshi 64.52 ms" width="760">
 </p>
 
 ## Why Yalın
@@ -136,16 +136,16 @@ Every library starts from the same UTF-8 `ByteArray` and validates the whole inp
   <img src="docs/assets/bench-alloc.svg" alt="Allocations for a full 1 MB tree: Yalın 79.3k, fastjson2 149.1k, Jackson 243.9k, kotlinx 304.4k, Moshi 304.5k, Gson 348.5k" width="760">
 </p>
 
-Yalın against the fastest other library (fastjson2) at each size:
+Yalın against the fastest other tree API at each size:
 
-| Input | Read 4 fields | Full tree |
+| Input | Read 4 fields (2026-11-23) | Full tree (2026-11-20) |
 |---|---:|---:|
-| 1 KB | **2.6×** faster | 6% slower |
-| 16 KB | **4.6×** faster | **1.3×** faster |
-| 256 KB | **4.6×** faster | **1.4×** faster |
-| 1 MB | **3.4×** faster | **1.3×** faster |
+| 1 KB | **2.5×** faster | 6% slower |
+| 16 KB | **2.9×** faster | **1.3×** faster |
+| 256 KB | **2.8×** faster | **1.4×** faster |
+| 1 MB | **2.7×** faster | **1.3×** faster |
 
-Measured with AndroidX Microbenchmark on an Infinix X6833B (Helio G99, Android 13), release build. Gson, Moshi, kotlinx.serialization, Jackson, fastjson2 and `org.json` were tested. The full numbers, an Exynos 7904 phone and the parser-only results are in [Android benchmarks](docs/benchmarks.md) and [Rust benchmarks](docs/core-benchmarks.md).
+Measured with AndroidX Microbenchmark on an Infinix X6833B (Helio G99, Android 13), release build. The full-tree charts use the complete 2026-11-20 run. The 2026-11-23 full-tree rerun ended early after an ADB disconnect. The full numbers, an Exynos 7904 phone and the parser-only results are in [Android benchmarks](docs/benchmarks.md) and [Rust benchmarks](docs/core-benchmarks.md).
 
 ## How it works
 

@@ -58,6 +58,28 @@ materialized. `EquivalenceTest.allTreesAgree` maps each tree to the same plain
 
 Yalın rejects duplicate keys in a tree. Fastjson2 and Gson keep the last one.
 
+### Infinix X6833B, Android 13, 2026-11-23
+
+Release build at `a1f5740`, AOT-compiled with the `speed` filter. The phone was
+charging and the CPU clocks were unlocked. Both equivalence tests and all 52
+four-field benchmark cases passed. The ADB connection dropped after 28 full-tree
+cases returned results. Missing cases are marked with a dash. The archived
+2026-11-20 run below contains the complete 1 MB full-tree comparison.
+
+Median time (ART allocations per operation):
+
+| Scenario | 1 KB | 16 KB | 256 KB | 1 MB |
+|---|---|---|---|---|
+| **YALIN_BYTES** | 24.27 µs (77) | 260.85 µs (1,045) | 3.99 ms (17,619) | 16.00 ms (75,455) |
+| GSON_BYTES | 71.83 µs (401) | 727.22 µs (5,549) | 10.99 ms (86,533) | — |
+| MOSHI_BYTES | 69.39 µs (329) | 1.02 ms (4,823) | 16.25 ms (75,579) | — |
+| KOTLINX_BYTES | 59.06 µs (340) | 820.55 µs (4,834) | 12.33 ms (75,578) | — |
+| JACKSON_BYTES | 44.99 µs (267) | 620.54 µs (3,875) | 9.53 ms (60,536) | — |
+| FASTJSON2_BYTES | 24.15 µs (162) | 329.02 µs (2,367) | 5.66 ms (37,022) | — |
+| **YALIN_STRING** | 29.22 µs (78) | 322.03 µs (1,046) | 4.74 ms (17,620) | — |
+| KOTLINX_STRING | 51.21 µs (339) | 750.00 µs (4,833) | 11.49 ms (75,577) | — |
+| FASTJSON2_STRING | 24.57 µs (168) | 357.62 µs (2,461) | 5.66 ms (38,503) | — |
+
 ### Infinix X6833B, Android 13, 2026-11-20
 
 All 90 benchmark and equivalence tests passed in a single release run. Clocks were not
@@ -81,7 +103,28 @@ At 1 KB it is 6% slower than fastjson2. Starting from a `String` costs another 1
 because of the UTF-8 encoding, and that is still faster than fastjson2's `String` path from
 16 KB up. A separate UTF-16 parser is not justified yet.
 
-## Infinix X6833B rerun
+## Read four fields on the Infinix X6833B, 2026-11-23
+
+All 13 scenarios completed in the release run above. Median time
+(ART allocations per operation):
+
+| Scenario | 1 KB | 16 KB | 256 KB | 1 MB |
+|---|---|---|---|---|
+| **YALIN_DOCUMENT** | 10.90 µs (18) | 80.44 µs (18) | 1.25 ms (19) | 5.21 ms (19) |
+| **YALIN_PROJECT** | 10.17 µs (16) | 115.39 µs (16) | 1.81 ms (17) | 7.29 ms (17) |
+| FASTJSON2_TREE | 25.06 µs (164) | 334.58 µs (2,369) | 5.11 ms (37,024) | 19.98 ms (147,438) |
+| JACKSON_TREE | 46.96 µs (268) | 618.65 µs (3,876) | 9.94 ms (60,537) | 38.56 ms (241,138) |
+| ORGJSON_TREE | 49.77 µs (323) | 665.47 µs (4,727) | 10.27 ms (74,038) | 41.78 ms (294,914) |
+| GSON_TREE | 75.17 µs (404) | 739.05 µs (5,552) | 11.26 ms (86,536) | 44.90 ms (344,828) |
+| GSON_MODEL | 85.96 µs (233) | 796.80 µs (3,179) | 12.01 ms (49,441) | 47.45 ms (197,105) |
+| MOSHI_MODEL | 50.20 µs (164) | 734.55 µs (2,457) | 11.79 ms (38,531) | 47.56 ms (153,566) |
+| KOTLINX_TREE | 61.27 µs (349) | 828.11 µs (4,843) | 12.21 ms (75,587) | 50.20 ms (301,012) |
+| KOTLINX_MODEL | 69.53 µs (186) | 923.29 µs (2,654) | 14.30 ms (41,449) | 58.32 ms (165,086) |
+| MOSHI_TREE | 69.43 µs (330) | 1.02 ms (4,824) | 16.51 ms (75,580) | 64.52 ms (301,127) |
+| JACKSON_MODEL | 93.76 µs (415) | 1.22 ms (5,787) | 19.15 ms (90,354) | 75.96 ms (359,851) |
+| FASTJSON2_MODEL | 201.44 µs (1,145) | 2.88 ms (16,199) | 43.87 ms (254,738) | 178.61 ms (1,015,018) |
+
+## Earlier Infinix X6833B projection run
 
 In a single release run on Android 13, all 52 measurements and the equivalence
 test passed. These are median times for the two Yalın paths and the fastest
@@ -142,7 +185,7 @@ Fastest competitor again fastjson2 tree: yalin 2.4–2.5× faster at every size;
 vs Gson tree 6.6× at 1 MB. yalin ≈ 56 MB/s at 1 MB. yalin numbers match the
 earlier Gson/Moshi-only run within 1%.
 
-## Cross-device (1 MB, yalin project)
+## Cross-device baseline, 2026-11-19 (1 MB, Yalın project)
 
 | Device | SoC | yalin | fastest competitor | speedup |
 |---|---|---|---|---|
