@@ -4,10 +4,10 @@
 //! [`Limits::max_depth`], never by the native call stack.
 
 use crate::scanner::{BlockScanner, Scanner, chunk_capacity};
-use crate::tape::{Node, Tag};
+use crate::tape::{Node, Tag, Tape};
 use crate::{ErrorKind, JsonError, Limits, number, strings, utf8};
 
-pub(crate) fn parse(input: &[u8], limits: &Limits) -> Result<Vec<Node>, JsonError> {
+pub(crate) fn parse(input: &[u8], limits: &Limits) -> Result<Tape, JsonError> {
     if input.len() > limits.max_input_len.min(u32::MAX as usize) {
         return Err(JsonError::new(ErrorKind::InputTooLarge, 0));
     }
@@ -22,7 +22,7 @@ pub(crate) fn parse(input: &[u8], limits: &Limits) -> Result<Vec<Node>, JsonErro
         len: 0,
         pos: 0,
         escaped: 0,
-        tape: Vec::with_capacity(tape_capacity(input.len())),
+        tape: Tape::new(input.len(), tape_capacity(input.len())),
         stack: Vec::with_capacity(16),
         context: Context::Top,
         max_depth: limits.max_depth,
@@ -74,7 +74,7 @@ struct Parser<'a> {
     pos: usize,
     /// Next unread entry of [`BlockScanner::escaped_closes`] for the current chunk.
     escaped: usize,
-    tape: Vec<Node>,
+    tape: Tape,
     /// Open containers: tape index and the enclosing [`Context`] to restore on close.
     stack: Vec<(usize, Context)>,
     context: Context,
@@ -94,7 +94,7 @@ fn is_delimiter(b: Option<&u8>) -> bool {
 }
 
 impl Parser<'_> {
-    fn run(mut self) -> Result<Vec<Node>, JsonError> {
+    fn run(mut self) -> Result<Tape, JsonError> {
         let mut state = State::Value;
         loop {
             state = match state {
@@ -238,7 +238,7 @@ impl Parser<'_> {
     /// Only called inside a container (the grammar states guarantee it).
     fn close(&mut self) -> State {
         if let Some((top, parent)) = self.stack.pop() {
-            self.tape[top].end = self.tape.len() as u32;
+            self.tape.close(top);
             self.context = parent;
         }
         self.after_value()

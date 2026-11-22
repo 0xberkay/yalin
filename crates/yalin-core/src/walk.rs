@@ -64,7 +64,7 @@ impl<'d> Value<'d> {
         let mut i = self.idx;
         while i < end {
             close_finished(&mut stack, &mut keys, i, visitor);
-            let node = self.tape[i];
+            let node = self.tape.node(i);
             if let Some(frame) = stack.last_mut() {
                 if frame.object {
                     // Keys sit at even positions among an object's children.
@@ -76,7 +76,7 @@ impl<'d> Value<'d> {
                 }
                 frame.len += 1;
             }
-            let node = self.tape[i];
+            let node = self.tape.node(i);
             match node.tag {
                 Tag::Null => visitor.null(),
                 Tag::True => visitor.bool(true),

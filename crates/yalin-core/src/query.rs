@@ -32,7 +32,7 @@
 use std::borrow::Cow;
 use std::fmt;
 
-use crate::tape::{Node, Tag};
+use crate::tape::{Node, Tag, Tape};
 use crate::{JsonError, Limits, parser, strings};
 
 /// JSON value type.
@@ -89,7 +89,7 @@ impl std::error::Error for QueryError {}
 /// A validated JSON document over a buffer it borrows (`&[u8]`) or owns (`Vec<u8>`).
 pub struct Document<B: AsRef<[u8]>> {
     input: B,
-    tape: Vec<Node>,
+    tape: Tape,
 }
 
 impl<B: AsRef<[u8]>> Document<B> {
@@ -122,13 +122,13 @@ impl<B: AsRef<[u8]>> Document<B> {
 #[derive(Clone, Copy)]
 pub struct Value<'d> {
     pub(crate) input: &'d [u8],
-    pub(crate) tape: &'d [Node],
+    pub(crate) tape: &'d Tape,
     pub(crate) idx: usize,
 }
 
 impl<'d> Value<'d> {
     pub(crate) fn node(&self) -> Node {
-        self.tape[self.idx]
+        self.tape.node(self.idx)
     }
 
     pub(crate) fn at(&self, idx: usize) -> Self {
@@ -213,7 +213,7 @@ impl<'d> Value<'d> {
             if self.at(i).key_eq(key) {
                 return Ok(self.at(i + 1));
             }
-            i = self.tape[i + 1].skip(i + 1);
+            i = self.tape.node(i + 1).skip(i + 1);
         }
         Err(QueryError::Missing)
     }
@@ -226,7 +226,7 @@ impl<'d> Value<'d> {
             if i >= end {
                 break;
             }
-            i = self.tape[i].skip(i);
+            i = self.tape.node(i).skip(i);
         }
         if i < end { Ok(self.at(i)) } else { Err(QueryError::Missing) }
     }

@@ -38,7 +38,7 @@ fn to_serde(v: Value<'_>) -> Serde {
             let mut i = v.idx + 1;
             while i < node.end as usize {
                 out.push(to_serde(v.at(i)));
-                i = v.tape[i].skip(i);
+                i = v.tape.node(i).skip(i);
             }
             Serde::Array(out)
         }
@@ -48,7 +48,7 @@ fn to_serde(v: Value<'_>) -> Serde {
             while i < node.end as usize {
                 let key = v.at(i).as_str().unwrap().into_owned();
                 out.insert(key, to_serde(v.at(i + 1)));
-                i = v.tape[i + 1].skip(i + 1);
+                i = v.tape.node(i + 1).skip(i + 1);
             }
             Serde::Object(out)
         }
@@ -441,7 +441,7 @@ fn escaped_strings_are_tagged_exactly() {
     fn check(input: &[u8]) {
         let tape = parser::parse(input, &Limits::default()).unwrap();
         let mut strings = 0;
-        for node in tape.iter().filter(|n| matches!(n.tag, Tag::String | Tag::EscapedString)) {
+        for node in (0..tape.len()).map(|i| tape.node(i)).filter(|n| matches!(n.tag, Tag::String | Tag::EscapedString)) {
             let has_backslash = input[node.span()].contains(&b'\\');
             assert_eq!(node.tag == Tag::EscapedString, has_backslash, "{:?}", String::from_utf8_lossy(input));
             strings += 1;
@@ -491,5 +491,24 @@ fn escaped_strings_are_tagged_exactly() {
         }
         doc.push(b']');
         check(&doc);
+    }
+}
+
+/// A reused tape never leaks nodes from the document it came from.
+#[test]
+fn reused_tape_starts_empty() {
+    let big = format!("[{}]", (0..5000).map(|i| format!(r#"{{"k":{i}}}"#)).collect::<Vec<_>>().join(","));
+    for _ in 0..3 {
+        let doc = Document::parse(big.as_bytes()).unwrap();
+        assert_eq!(doc.get("[4999].k").unwrap().as_i64().unwrap(), 4999);
+        drop(doc);
+        let small = Document::parse(br#"{"a":[true]}"#.as_slice()).unwrap();
+        assert!(small.get("a[0]").unwrap().as_bool().unwrap());
+        assert_eq!(small.get("a[1]").unwrap_err(), QueryError::Missing);
+        // Two live documents on one thread each keep their own tape.
+        let other = Document::parse(b"[1,2]".as_slice()).unwrap();
+        assert_eq!(small.get("a[0]").unwrap().kind(), ValueKind::Bool);
+        assert_eq!(other.get("[1]").unwrap().as_i64().unwrap(), 2);
+        crate::validate(big.as_bytes()).unwrap();
     }
 }
